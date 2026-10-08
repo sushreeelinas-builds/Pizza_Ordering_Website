@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Domino's - Sign Up</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-[#eeeadb]">
+
+    <div class="min-h-screen flex flex-col md:flex-row">
+
+    
+        <div class="w-full md:w-1/2 min-h-[400px] md:min-h-screen
+                    bg-[#ff4b0b] flex items-center justify-center
+                    overflow-hidden">
+
+            <div class="text-center flex flex-col items-center justify-center
+                        py-10">
+                
+                <img
+                    src="https://tse3.mm.bing.net/th/id/OIP.8UeIFPMYwIErE1ShRYB9QAHaEo?r=0&pid=Api&h=220&P=0"
+                    alt="Pizza"
+                    class="w-56 md:w-72 h-auto object-contain
+                           drop-shadow-2xl"
+                >
+                <h2 class="text-white text-3xl md:text-4xl
+                           font-bold mt-6">
+                    Fresh & Delicious
+                </h2>
+
+                <p class="text-white/90 mt-2 text-sm md:text-base">
+                    Your favourite pizza is waiting for you!
+                </p>
+
+            </div>
+        </div>
+    
+        <div class="w-full md:w-1/2 flex items-center justify-center
+                    px-6 py-10 md:px-16">
+
+            <div class="w-full max-w-md">
+               
+                <h1 class="text-3xl font-semibold text-gray-900
+                           text-center mb-8">
+                    Create account
+                </h1>
+               
+                <form id="registerForm">
+
+                    
+                    <div class="mb-3">
+
+                        <input
+                            type="text"
+                            id="name"
+                            placeholder="Name"
+                            required
+                            class="w-full bg-white border border-gray-200
+                                   px-4 py-4 outline-none
+                                   focus:border-[#ff4b0b]"
+                        >
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="E-mail"
+                            required
+                            class="w-full bg-white border border-gray-200
+                                   px-4 py-4 outline-none
+                                   focus:border-[#ff4b0b]"
+                        >
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            placeholder="Phone number"
+                            maxlength="10"
+                            required
+                            class="w-full bg-white border border-gray-200
+                                   px-4 py-4 outline-none
+                                   focus:border-[#ff4b0b]"
+                        >
+
+                    </div>
+                    
+                    <div class="mb-3">
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Password"
+                            required
+                            class="w-full bg-white border border-gray-200
+                                   px-4 py-4 outline-none
+                                   focus:border-[#ff4b0b]"
+                        >
+
+                    </div>
+                    <div class="mb-3">
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Confirm password"
+                            required
+                            class="w-full bg-white border border-gray-200
+                                   px-4 py-4 outline-none
+                                   focus:border-[#ff4b0b]"
+                        >
+
+                    </div>
+
+                    <div class="bg-white border border-gray-200
+                                px-4 py-4 mb-3">
+
+                        <label class="flex items-center gap-2
+                                      text-sm text-gray-700">
+
+                            <input
+                                type="checkbox"
+                                id="terms"
+                                required
+                                class="w-4 h-4 accent-[#ff4b0b]"
+                            >
+
+                            <span>
+                                I agree terms & conditions
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                    <p
+                        id="message"
+                        class="text-center text-sm mb-3">
+                    </p>
+                    
+                    <button
+                        type="submit"
+                        class="w-full bg-[#ff4b0b]
+                               hover:bg-[#e94308]
+                               text-white text-xl py-3
+                               transition duration-200
+                               rounded-sm"
+                    >
+                        Sign up
+                    </button>
+
+                </form>
+                
+                <p class="text-center text-sm text-gray-700 mt-5">
+
+                    Already have an account?
+
+                    <a
+                        href="login.html"
+                        class="text-[#ff4b0b] hover:underline"
+                    >
+                        Sign in
+                    </a>
+
+                    Here
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+   
+    <script>
+        document
+            .getElementById("registerForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+                const name =
+                    document.getElementById("name").value.trim();
+
+                const email =
+                    document.getElementById("email").value.trim();
+
+                const phone =
+                    document.getElementById("phone").value.trim();
+
+                const password =
+                    document.getElementById("password").value;
+
+                const confirmPassword =
+                    document.getElementById("confirmPassword").value;
+
+                const message =
+                    document.getElementById("message");
+
+                if (!/^[0-9]{10}$/.test(phone)) {
+
+                    message.textContent =
+                        "Please enter a valid 10-digit phone number.";
+
+                    message.className =
+                        "text-center text-sm mb-3 text-red-600";
+
+                    return;
+                }
+
+                if (password.length < 6) {
+
+                    message.textContent =
+                        "Password must contain at least 6 characters.";
+
+                    message.className =
+                        "text-center text-sm mb-3 text-red-600";
+
+                    return;
+                }
+              
+                if (password !== confirmPassword) {
+
+                    message.textContent =
+                        "Passwords do not match.";
+
+                    message.className =
+                        "text-center text-sm mb-3 text-red-600";
+
+                    return;
+                }
+                let users =
+                    JSON.parse(
+                        localStorage.getItem("dominosUsers")
+                    ) || [];
+
+                const existingUser =
+                    users.find(
+                        user =>
+                            user.email.toLowerCase() ===
+                            email.toLowerCase()
+                    );
+
+                if (existingUser) {
+
+                    message.textContent =
+                        "This email is already registered.";
+
+                    message.className =
+                        "text-center text-sm mb-3 text-red-600";
+
+                    return;
+                }
+
+                const newUser = {
+
+                    id: Date.now(),
+
+                    name: name,
+
+                    email: email,
+
+                    phone: phone,
+
+                    password: password
+
+                };
+                
+                users.push(newUser);
+
+                localStorage.setItem(
+                    "dominosUsers",
+                    JSON.stringify(users)
+                );
+
+                message.textContent =
+                    "Account created successfully!";
+
+                message.className =
+                    "text-center text-sm mb-3 text-green-600";
+                
+                document
+                    .getElementById("registerForm")
+                    .reset();
+                
+                setTimeout(function() {
+
+                    window.location.href = "login.html";
+
+                }, 1500);
+
+            });
+
+    </script>
+</body>
+</html>
