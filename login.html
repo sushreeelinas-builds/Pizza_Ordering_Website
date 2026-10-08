@@ -3,9 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>Delivery Partner Login</title>
+
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"
+      integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        
+        .logo-diamond {
+            transform: rotate(45deg);
+        }
+
+        .logo-text {
+            letter-spacing: -1px;
+        }
+    </style>
 </head>
-<body>
-    This is login page
+
+<body class="min-h-screen bg-[#075b91] overflow-x-hidden">
+
+
+    <div class="fixed inset-0 opacity-10 pointer-events-none">
+
+        <div class="absolute w-72 h-72 rounded-full border-[35px]
+                    border-white -left-20 top-40"></div>
+
+        <div class="absolute w-80 h-80 rounded-full border-[40px]
+                    border-white -right-40 top-20"></div>
+
+        <div class="absolute w-96 h-96 rounded-full border-[45px]
+                    border-white -right-52 bottom-0"></div>
+
+    </div>
+
+
+    
+    <div class="relative min-h-screen flex justify-center px-5 py-10">
+
+        <div class="w-full max-w-md">
+
+           
+            <h1 class="text-white text-3xl sm:text-4xl
+                       font-extrabold leading-tight mb-8">
+
+                Login To Kickstart
+                <br>
+                Your Earnings!
+            </h1>
+
+            <div class="bg-[#f8f7f5] rounded-t-[65px] rounded-b-3xl
+                        shadow-2xl min-h-[650px] px-6 sm:px-10
+                        pt-14 pb-10">
+
+                <div class="flex justify-center items-center mb-12">
+
+                    
+                    <div class="relative w-14 h-14 mr-3">
+
+                        <div class="absolute top-0 right-0
+                                    w-8 h-8 bg-[#e31837]
+                                    logo-diamond rounded-sm">
+
+                            <div class="absolute inset-0
+                                        flex items-center justify-center
+                                        text-white text-sm font-bold">
+                                  ●
+                            </div>
+
+                        </div>
+
+                        <div class="absolute bottom-0 left-0
+                                    w-8 h-8 bg-[#0070a8]
+                                    logo-diamond rounded-sm">
+
+                            <div class="absolute inset-0
+                                        flex items-center justify-center
+                                        text-white text-sm font-bold">
+                                ●
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    
+                    <h2 class="text-3xl font-extrabold
+                               text-[#0070a8] logo-text">
+
+                        Domino's
+
+                    </h2>
+
+                </div>
+
+
+                
+                <div class="bg-white rounded-xl shadow-md
+                            border border-gray-200 p-4 sm:p-5">
+
+
+                    
+                    <div class="relative mb-5">
+
+                        <input
+                            type="text"
+                            id="userId"
+                            placeholder=" "
+                            class="peer w-full border-2 border-gray-300
+                                   rounded-lg px-4 py-3
+                                   outline-none
+                                   focus:border-[#0070a8]
+                                   transition"
+                        >
+
+                        <label
+                            for="userId"
+                            class="absolute left-4 top-3
+                                   text-gray-400 bg-white px-1
+                                   transition-all
+
+                                   peer-focus:-top-3
+                                   peer-focus:text-[#0070a8]
+                                   peer-focus:text-sm
+
+                                   peer-not-placeholder-shown:-top-3
+                                   peer-not-placeholder-shown:text-[#0070a8]
+                                   peer-not-placeholder-shown:text-sm">
+
+                            User ID
+
+                        </label>
+
+                    </div>
+
+
+                    
+                    <div class="relative">
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder=" "
+                            class="peer w-full border-2 border-[#9bb9cc]
+                                   rounded-lg px-4 py-3 pr-12
+                                   outline-none
+                                   focus:border-[#0070a8]"
+                        >
+
+                        <label
+                            for="password"
+                            class="absolute left-4 top-3
+                                   text-gray-400 bg-white px-1
+                                   transition-all
+
+                                   peer-focus:-top-3
+                                   peer-focus:text-[#0070a8]
+                                   peer-focus:text-sm
+
+                                   peer-not-placeholder-shown:-top-3
+                                   peer-not-placeholder-shown:text-[#0070a8]
+                                   peer-not-placeholder-shown:text-sm">
+
+                            Password
+
+                        </label>
+
+
+                        
+                        <button
+                            type="button"
+                            onclick="togglePassword()"
+                            class="absolute right-4 top-3.5
+                                   text-gray-600">
+
+                            
+
+                        </button>
+
+                    </div>
+
+
+                    
+                    <div class="flex items-center mt-5">
+
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            class="w-5 h-5 accent-[#0070a8]"
+                        >
+
+                        <label
+                            for="remember"
+                            class="ml-2 text-sm text-gray-600">
+
+                            Remember me
+
+                        </label>
+
+                    </div>
+
+
+                    
+                    <button
+                        onclick="login()"
+                        class="w-full mt-5
+                               bg-[#00a651]
+                               hover:bg-[#008c45]
+                               text-white
+                               font-bold
+                               py-3
+                               rounded-lg
+                               shadow
+                               transition
+                               flex items-center justify-center gap-3">
+
+                        <span class="bg-white text-[#00a651]
+                                     rounded-md px-2 py-1">
+
+                            ➜
+
+                        </span>
+
+                        Login
+
+                    </button>
+
+                </div>
+
+
+                
+                <div class="text-center mt-28">
+
+                    <p class="text-gray-500 text-sm">
+
+                        Don't have an account?
+
+                        <a
+                            href="#"
+                            class="text-red-500 font-semibold
+                                   hover:underline">
+
+                            Register
+
+                        </a>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
 </body>
 </html>
