@@ -1,0 +1,731 @@
+## Step 1: Create `index.html`
+
+Copy the complete code below into your `index.html` file and open it in your browser.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Domino's Pizza Menu</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .pizza-card {
+            height: 385px;
+        }
+
+        .pizza-image {
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pizza-overlay {
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.98) 0%,
+                rgba(0, 0, 0, 0.65) 32%,
+                transparent 75%
+            );
+        }
+
+        .category {
+            white-space: nowrap;
+            cursor: pointer;
+            padding: 17px 12px;
+            border-bottom: 4px solid transparent;
+        }
+
+        .category.active {
+            border-bottom-color: #e31837;
+            font-weight: bold;
+        }
+
+        .veg-icon {
+            border: 2px solid #079447;
+            padding: 2px;
+            border-radius: 3px;
+            display: inline-flex;
+        }
+
+        .nonveg-icon {
+            border: 2px solid #a34b2a;
+            padding: 2px;
+            border-radius: 3px;
+            display: inline-flex;
+        }
+
+        @media (max-width: 640px) {
+            .pizza-card {
+                height: 330px;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-800 pb-16">
+
+    <!-- HEADER -->
+    <header class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+        <div class="flex items-center gap-5">
+            <button class="text-2xl" aria-label="Back">←</button>
+            <h1 class="text-xl font-bold">Domino's Pizza</h1>
+        </div>
+
+        <button
+            id="searchBtn"
+            class="w-10 h-10 rounded-full border border-gray-200 text-2xl"
+            aria-label="Search">
+            ⌕
+        </button>
+    </header>
+
+    <!-- SEARCH -->
+    <div id="searchBox" class="hidden p-3 border-b">
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search your favourite pizza..."
+            class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-red-500">
+    </div>
+
+    <!-- FILTERS -->
+    <section class="flex flex-wrap items-center gap-2 p-3 border-b border-gray-200">
+
+        <button
+            id="vegFilter"
+            class="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100">
+            <span class="veg-icon">
+                <span class="w-2 h-2 bg-green-600 rounded-full"></span>
+            </span>
+            Veg Only
+        </button>
+
+        <button
+            id="nonVegFilter"
+            class="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100">
+            <span class="nonveg-icon">
+                <span class="w-2 h-2 bg-red-700 rounded-full"></span>
+            </span>
+            Non Veg Only
+        </button>
+
+        <select
+            id="sortSelect"
+            class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+            <option value="default">Sort by ↕</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+        </select>
+    </section>
+
+    <!-- CATEGORY NAVIGATION -->
+    <nav class="sticky top-0 z-20 bg-white border-b border-gray-300">
+        <div id="categoryNav" class="flex overflow-x-auto">
+            <button class="category active" data-category="Cheese Lava">
+                Cheese Lava
+            </button>
+            <button class="category" data-category="Big Big Pizza">
+                Big Big Pizza
+            </button>
+            <button class="category" data-category="Veg Pizza">
+                Veg Pizza
+            </button>
+            <button class="category" data-category="Non-Veg Pizza">
+                Non-Veg Pizza
+            </button>
+            <button class="category" data-category="Deals">
+                Deals
+            </button>
+            <button class="category" data-category="Chicken Feast">
+                Chicken Feast
+            </button>
+            <button class="category" data-category="Cheese Burst Pizza">
+                Cheese Burst Pizza
+            </button>
+            <button class="category" data-category="Cheese Volcano">
+                Cheese Volcano
+            </button>
+            <button class="category" data-category="Pizza Mania">
+                Pizza Mania
+            </button>
+            <button class="category" data-category="Garlic Breads & Dips">
+                Garlic Breads & Dips
+            </button>
+            <button class="category" data-category="Beverages">
+                Beverages
+            </button>
+            <button class="category" data-category="Desserts">
+                Desserts
+            </button>
+            <button class="category" data-category="No Onion No Garlic">
+                No Onion No Garlic
+            </button>
+            <button class="category" data-category="Tacos & Parcels">
+                Tacos & Parcels
+            </button>
+            <button class="category" data-category="Slices">
+                Slices
+            </button>
+        </div>
+    </nav>
+
+    <!-- SECTION TITLE -->
+    <div class="flex items-center gap-5 px-4 py-1">
+        <div class="h-px bg-gray-300 flex-1"></div>
+        <h2 id="sectionTitle" class="text-xl font-bold text-gray-600">
+            Cheese Lava
+        </h2>
+        <div class="h-px bg-gray-300 flex-1"></div>
+    </div>
+
+    <!-- PIZZA CARDS -->
+    <main class="max-w-5xl mt-4">
+        <div
+            id="pizzaContainer"
+            class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <!-- CARD 1 -->
+            <article
+                class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"
+                data-name="Cheese Lava Golden Corn"
+                data-price="399"
+                data-type="veg"
+                data-category="Cheese Lava">
+
+                <img
+                    class="pizza-image absolute inset-0 w-full"
+                    src="https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=900&q=85"
+                    alt="Golden corn cheese pizza">
+
+                <div class="pizza-overlay absolute inset-0"></div>
+
+                <div class="absolute bottom-0 w-full text-white">
+
+                    <div class="px-2 pb-3">
+                        <h3 class="font-bold text-lg flex items-center gap-2">
+                            <span class="veg-icon">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            </span>
+                            Cheese Lava Golden Corn
+                        </h3>
+
+                        <p class="text-xs mt-1">
+                            8 cheesy pull-aparts topped with juicy corn!
+                            Pull & dip into molten cheese bliss...
+                        </p>
+                    </div>
+
+                    <div class="bg-black/75 p-2 flex items-center justify-between gap-2">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-xl font-bold">₹399</span>
+                                <span class="line-through text-gray-300 text-sm">₹499</span>
+                                <span class="bg-green-600 text-white text-xs px-1 font-bold">
+                                    Save ₹100.00
+                                </span>
+                            </div>
+                            <p class="text-sm font-semibold">
+                                Medium | Pull Apart Crust
+                            </p>
+                        </div>
+
+                        <button
+                            class="add-btn bg-[#e31837] hover:bg-red-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
+                            Add +
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CARD 2 -->
+            <article
+                class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"
+                data-name="Cheese Lava Spiced Double Chicken"
+                data-price="399"
+                data-type="nonveg"
+                data-category="Cheese Lava">
+
+                <img
+                    class="pizza-image absolute inset-0 w-full"
+                    src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=85"
+                    alt="Chicken cheese pizza">
+
+                <div class="pizza-overlay absolute inset-0"></div>
+
+                <div class="absolute bottom-0 w-full text-white">
+
+                    <div class="px-2 pb-3">
+                        <h3 class="font-bold text-lg flex items-center gap-2">
+                            <span class="nonveg-icon">
+                                <span class="w-2 h-2 bg-red-600 rounded-full"></span>
+                            </span>
+                            Cheese Lava Spiced Double Chicken
+                        </h3>
+
+                        <p class="text-xs mt-1">
+                            8 cheesy pull-aparts loaded with Pepper BBQ
+                            Chicken & Peri Peri Chicken! Pull, dip & relish
+                            the cheesy heaven...
+                        </p>
+                    </div>
+
+                    <div class="bg-black/75 p-2 flex items-center justify-between gap-2">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-xl font-bold">₹399</span>
+                                <span class="line-through text-gray-300 text-sm">₹599</span>
+                                <span class="bg-green-600 text-white text-xs px-1 font-bold">
+                                    Save ₹200.00
+                                </span>
+                            </div>
+                            <p class="text-sm font-semibold">
+                                Medium | Pull Apart Crust
+                            </p>
+                        </div>
+
+                        <button
+                            class="add-btn bg-[#e31837] hover:bg-red-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
+                            Add +
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CARD 3 -->
+            <article
+                class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"
+                data-name="Cheese Lava Veggie Delight"
+                data-price="349"
+                data-type="veg"
+                data-category="Cheese Lava">
+
+                <img
+                    class="pizza-image absolute inset-0 w-full"
+                    src="https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=900&q=85"
+                    alt="Vegetable pizza">
+
+                <div class="pizza-overlay absolute inset-0"></div>
+
+                <div class="absolute bottom-0 w-full text-white">
+
+                    <div class="px-2 pb-3">
+                        <h3 class="font-bold text-lg flex items-center gap-2">
+                            <span class="veg-icon">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            </span>
+                            Cheese Lava Veggie Delight
+                        </h3>
+
+                        <p class="text-xs mt-1">
+                            Loaded with fresh vegetables, delicious cheese
+                            and a creamy lava centre.
+                        </p>
+                    </div>
+
+                    <div class="bg-black/75 p-2 flex items-center justify-between gap-2">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-xl font-bold">₹349</span>
+                                <span class="line-through text-gray-300 text-sm">₹449</span>
+                                <span class="bg-green-600 text-white text-xs px-1 font-bold">
+                                    Save ₹100.00
+                                </span>
+                            </div>
+                            <p class="text-sm font-semibold">
+                                Medium | Pull Apart Crust
+                            </p>
+                        </div>
+
+                        <button
+                            class="add-btn bg-[#e31837] hover:bg-red-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
+                            Add +
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CARD 4 -->
+            <article
+                class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"
+                data-name="Cheese Lava Mushroom"
+                data-price="379"
+                data-type="veg"
+                data-category="Cheese Lava">
+
+                <img
+                    class="pizza-image absolute inset-0 w-full"
+                    src="https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=900&q=85"
+                    alt="Mushroom cheese pizza">
+
+                <div class="pizza-overlay absolute inset-0"></div>
+
+                <div class="absolute bottom-0 w-full text-white">
+
+                    <div class="px-2 pb-3">
+                        <h3 class="font-bold text-lg flex items-center gap-2">
+                            <span class="veg-icon">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            </span>
+                            Cheese Lava Mushroom
+                        </h3>
+
+                        <p class="text-xs mt-1">
+                            A delicious cheesy pizza with mushrooms,
+                            herbs and a rich molten cheese centre.
+                        </p>
+                    </div>
+
+                    <div class="bg-black/75 p-2 flex items-center justify-between gap-2">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-xl font-bold">₹379</span>
+                                <span class="line-through text-gray-300 text-sm">₹479</span>
+                                <span class="bg-green-600 text-white text-xs px-1 font-bold">
+                                    Save ₹100.00
+                                </span>
+                            </div>
+                            <p class="text-sm font-semibold">
+                                Medium | Pull Apart Crust
+                            </p>
+                        </div>
+
+                        <button
+                            class="add-btn bg-[#e31837] hover:bg-red-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
+                            Add +
+                        </button>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <p id="noResults" class="hidden text-center p-10 text-gray-500">
+            No pizzas found.
+        </p>
+    </main>
+
+    <!-- FIXED CART BAR -->
+    <footer
+        class="fixed bottom-0 left-0 z-50 w-full bg-[#e31837] text-white px-3 py-3 rounded-t-md shadow-lg">
+
+        <div class="flex items-center justify-between">
+            <div>
+                <p id="cartCount" class="font-bold text-sm">0 items</p>
+                <p id="cartTotal" class="text-xs"></p>
+            </div>
+
+            <button
+                id="viewCart"
+                class="flex items-center gap-2 font-bold hover:opacity-80">
+                <span class="text-2xl">🛒</span>
+                <span>View Cart</span>
+                <span id="cartBadge" class="bg-white text-red-600 rounded-full px-2 text-xs">
+                    0
+                </span>
+                <span class="text-2xl">›</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- CART MODAL -->
+    <div
+        id="cartModal"
+        class="hidden fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4">
+
+        <div class="bg-white rounded-xl w-full max-w-md p-5 shadow-xl">
+
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold">Your Cart</h2>
+                <button id="closeCart" class="text-2xl">×</button>
+            </div>
+
+            <div id="cartItems" class="space-y-3 max-h-72 overflow-y-auto">
+                <p class="text-gray-500">Your cart is empty.</p>
+            </div>
+
+            <div class="border-t mt-4 pt-4 flex items-center justify-between">
+                <span class="font-bold">Total</span>
+                <span id="modalTotal" class="font-bold text-xl">₹0</span>
+            </div>
+
+            <button
+                id="checkoutBtn"
+                class="mt-4 w-full rounded-lg bg-[#e31837] text-white font-bold py-3">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const pizzas = [...document.querySelectorAll(".pizza-item")];
+
+        const vegFilter = document.getElementById("vegFilter");
+        const nonVegFilter = document.getElementById("nonVegFilter");
+        const sortSelect = document.getElementById("sortSelect");
+        const searchInput = document.getElementById("searchInput");
+        const pizzaContainer = document.getElementById("pizzaContainer");
+        const noResults = document.getElementById("noResults");
+
+        let selectedType = "all";
+        let selectedCategory = "Cheese Lava";
+        let cart = [];
+
+        // SEARCH BOX
+        document.getElementById("searchBtn").addEventListener("click", () => {
+            document.getElementById("searchBox").classList.toggle("hidden");
+            searchInput.focus();
+        });
+
+        // CATEGORY NAVIGATION
+        document.querySelectorAll(".category").forEach(button => {
+            button.addEventListener("click", () => {
+                document.querySelector(".category.active")
+                    ?.classList.remove("active");
+
+                button.classList.add("active");
+
+                selectedCategory = button.dataset.category;
+
+                document.getElementById("sectionTitle").textContent =
+                    selectedCategory;
+
+                filterPizzas();
+            });
+        });
+
+        // VEG FILTER
+        vegFilter.addEventListener("click", () => {
+            selectedType = selectedType === "veg" ? "all" : "veg";
+            updateFilterButtons();
+            filterPizzas();
+        });
+
+        // NON-VEG FILTER
+        nonVegFilter.addEventListener("click", () => {
+            selectedType = selectedType === "nonveg" ? "all" : "nonveg";
+            updateFilterButtons();
+            filterPizzas();
+        });
+
+        function updateFilterButtons() {
+            vegFilter.classList.toggle(
+                "bg-green-100",
+                selectedType === "veg"
+            );
+
+            nonVegFilter.classList.toggle(
+                "bg-red-100",
+                selectedType === "nonveg"
+            );
+        }
+
+        // SEARCH
+        searchInput.addEventListener("input", filterPizzas);
+
+        // SORT
+        sortSelect.addEventListener("change", filterPizzas);
+
+        // FILTER, SEARCH AND SORT
+        function filterPizzas() {
+            const searchText = searchInput.value.toLowerCase();
+
+            let filtered = pizzas.filter(pizza => {
+                const matchesType =
+                    selectedType === "all" ||
+                    pizza.dataset.type === selectedType;
+
+                const matchesSearch =
+                    pizza.dataset.name.toLowerCase().includes(searchText);
+
+                // Demo products are in the Cheese Lava category.
+                // Other category selections show the available demo products.
+                const matchesCategory =
+                    selectedCategory === "Cheese Lava" ||
+                    pizza.dataset.category === selectedCategory;
+
+                return matchesType && matchesSearch && matchesCategory;
+            });
+
+            if (sortSelect.value === "low") {
+                filtered.sort((a, b) =>
+                    Number(a.dataset.price) - Number(b.dataset.price)
+                );
+            }
+
+            if (sortSelect.value === "high") {
+                filtered.sort((a, b) =>
+                    Number(b.dataset.price) - Number(a.dataset.price)
+                );
+            }
+
+            pizzas.forEach(pizza => pizza.classList.add("hidden"));
+
+            filtered.forEach(pizza => {
+                pizza.classList.remove("hidden");
+                pizzaContainer.appendChild(pizza);
+            });
+
+            noResults.classList.toggle("hidden", filtered.length !== 0);
+        }
+
+        // ADD PIZZA TO CART
+        document.querySelectorAll(".add-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const pizza = button.closest(".pizza-item");
+                const name = pizza.dataset.name;
+                const price = Number(pizza.dataset.price);
+
+                const existing = cart.find(item => item.name === name);
+
+                if (existing) {
+                    existing.quantity++;
+                } else {
+                    cart.push({
+                        name: name,
+                        price: price,
+                        quantity: 1
+                    });
+                }
+
+                updateCart();
+
+                button.textContent = "Added ✓";
+
+                setTimeout(() => {
+                    button.textContent = "Add +";
+                }, 700);
+            });
+        });
+
+        // UPDATE CART
+        function updateCart() {
+            const count = cart.reduce(
+                (sum, item) => sum + item.quantity, 0
+            );
+
+            const total = cart.reduce(
+                (sum, item) => sum + item.price * item.quantity, 0
+            );
+
+            document.getElementById("cartCount").textContent =
+                count + (count === 1 ? " item" : " items");
+
+            document.getElementById("cartBadge").textContent = count;
+
+            document.getElementById("cartTotal").textContent =
+                count ? "Total: ₹" + total : "";
+
+            document.getElementById("modalTotal").textContent =
+                "₹" + total;
+
+            const cartItems = document.getElementById("cartItems");
+            cartItems.innerHTML = "";
+
+            if (cart.length === 0) {
+                cartItems.innerHTML =
+                    '<p class="text-gray-500">Your cart is empty.</p>';
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                const row = document.createElement("div");
+
+                row.className =
+                    "flex items-center justify-between gap-3 border-b pb-3";
+
+                const details = document.createElement("div");
+
+                const name = document.createElement("p");
+                name.className = "font-semibold text-sm";
+                name.textContent = item.name;
+
+                const price = document.createElement("p");
+                price.className = "text-gray-500 text-sm";
+                price.textContent =
+                    "₹" + item.price + " × " + item.quantity;
+
+                details.append(name, price);
+
+                const removeButton = document.createElement("button");
+                removeButton.className =
+                    "text-red-600 font-bold px-2";
+                removeButton.textContent = "−";
+
+                removeButton.addEventListener("click", () => {
+                    item.quantity--;
+
+                    if (item.quantity <= 0) {
+                        cart.splice(index, 1);
+                    }
+
+                    updateCart();
+                });
+
+                const subtotal = document.createElement("span");
+                subtotal.className = "font-bold text-sm";
+                subtotal.textContent =
+                    "₹" + item.price * item.quantity;
+
+                row.append(details, removeButton, subtotal);
+                cartItems.appendChild(row);
+            });
+        }
+
+        // OPEN AND CLOSE CART
+        const cartModal = document.getElementById("cartModal");
+
+        document.getElementById("viewCart").addEventListener("click", () => {
+            cartModal.classList.remove("hidden");
+        });
+
+        document.getElementById("closeCart").addEventListener("click", () => {
+            cartModal.classList.add("hidden");
+        });
+
+        cartModal.addEventListener("click", event => {
+            if (event.target === cartModal) {
+                cartModal.classList.add("hidden");
+            }
+        });
+
+        document.getElementById("checkoutBtn").addEventListener("click", () => {
+            if (cart.length === 0) {
+                alert("Please add a pizza to your cart first!");
+            } else {
+                alert("Demo checkout! Connect a payment system to accept orders.");
+            }
+        });
+    </script>
+
+</body>
+</html>
+```
+
+## Step 2: Run the page
+
+1. Create a folder named `Dominos`.
+2. Inside it, create `index.html`.
+3. Paste the code and save it.
+4. Open `index.html` in Chrome, or use the **Live Server** extension in VS Code.
+
+## Features included
+
+* Responsive pizza menu with two columns on desktop and one on mobile.
+* Horizontal, scrollable categories.
+* Working Veg Only and Non Veg Only filters.
+* Search pizzas by name.
+* Sort by price from low to high or high to low.
+* Add pizzas to the cart and increase quantities.
+* View the cart, remove items, and calculate the total.
+* Fixed red cart bar at the bottom.
+
+**Note:** The pizza photos are sample images from Unsplash, not official Domino’s product photos. The category navigation is a front-end demo; additional products need to be added for other categories. The checkout button is also a demo and does not process real payments.

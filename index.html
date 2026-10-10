@@ -1,299 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pizza Home</title>
+  <title>Pizza Home</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-     <style>
-        @keyframes slide {
-            from {
-                transform: translateX(0);
-            }
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+ <script>
+    tailwind.config = { darkMode: 'class' };
 
-            to {
-                transform: translateX(-50%);
-            }
-        }
+    // Apply the saved theme (or the system theme on first visit) before the page paints
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (saved === 'dark' || (!saved && prefersDark)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+  <style>
+    @keyframes slide {
+      from {
+        transform: translateX(0);
+      }
 
-        .slider {
-            animation: slide 15s linear infinite;
-        }
+      to {
+        transform: translateX(-50%);
+      }
+    }
 
-        .slider:hover {
-            animation-play-state: paused;
-        }
-    </style>
+    .slider {
+      animation: slide 15s linear infinite;
+    }
+
+    .slider:hover {
+      animation-play-state: paused;
+    }
+  </style>
 </head>
-
 <body class="bg-gray-50 text-gray-900">
 
-    <nav class="flex items-center gap-6 px-10 py-4 bg-white">
+  <nav class="flex items-center gap-6 px-10 py-4 bg-white">
 
-        <h1 class="text-2xl font-bold text-blue-900">
-            🍕 Domino's
-        </h1>
+    <h1 class="text-2xl font-bold text-blue-900">
+      🍕 Domino's
+    </h1>
 
-        <div class="flex-1 bg-gray-100 rounded-full px-5 py-3 text-gray-500">
-            📍 Set your delivery location
-        </div>
+    <div class="flex-1 bg-gray-100 rounded-full px-5 py-3 text-gray-500">
+      📍 Set your delivery location
+    </div>
 
-        <button class="text-xl">🌙</button>
-        <button class="text-xl">👤</button>
 
-        <button class="bg-red-600 text-white rounded-full px-4 py-3">
-            🛒 <span>0</span>
-        </button>
+<button id="themeToggle"
+            class="p-2 rounded-full text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+            aria-label="Toggle dark mode">
 
-    </nav>
+      <svg class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M21.752 15.002A9.718 9.718 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+      </svg>
 
-   <section class="mx-10 mt-5 rounded-3xl p-10 bg-[url('./images/pizza.png')]  bg-cover bg-center
+      <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+      </svg>
+    </button>
+
+<a href="profile.html"><button class="p-2 rounded-full hover:bg-gray-100 text-gray-700" aria-label="Profile">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+  </svg>
+</button></a>
+    <a href="login.html" class="inline-block bg-red-600 text-white font-bold px-6 py-3 rounded-full hover:bg-red-700">
+      Login
+    </a>
+    
+   <a href="cart.html" class="inline-flex items-center gap-2 bg-red-600 text-white font-bold px-6 py-3 rounded-full hover:bg-red-700">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M7 18a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM1 2v2h2l3.6 7.6-1.4 2.4A2 2 0 007 17h12v-2H7.4l1.1-2h7.5a2 2 0 001.7-1l3.6-6.5A1 1 0 0020.4 4H5.2l-.9-2H1z"/>
+  </svg>
+  <span id="cartCount">0</span>
+</a>
+     
+  </nav>
+
+  <section class="mx-10 mt-5 rounded-3xl p-10 bg-[url('./images/pizza.png')]  bg-cover bg-center
     text-white flex items-center justify-between">
 
-        <div>
+    <div>
 
-            <h2 class="text-5xl font-bold leading-tight">
-                Hot pizza.<br>
-                At your door<br>
-                in 30 minutes.
-            </h2>
-            <p class="mt-4 text-lg">
-                Get ₹30 off on orders of ₹199 or more.
-            </p>
+      <h2 class="text-5xl font-bold leading-tight">
+        Hot pizza.<br>
+        At your door<br>
+        in 30 minutes.
+      </h2>
+      <p class="mt-4 text-lg">
+        Get ₹30 off on orders of ₹199 or more.
+      </p>
 
-            <button class="mt-6 bg-white text-red-600 font-bold px-6 py-3 rounded-full">
-                Order now
-            </button>
+      <button class="mt-6 bg-white text-red-600 font-bold px-6 py-3 rounded-full">
+        Order now
+      </button>
+    </div>
+  </section>
+
+  <section class="max-w-8xl mx-auto px-4 sm:px-8 py-6">
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-800 mb-3">What are you craving for?</h2>
+ 
+    <!-- Horizontal scroll row -->
+    <div class="flex gap-10 overflow-x-auto pb-4 pt-1">
+ 
+      <!-- Card 1 -->
+      <a href="menu.html#5-course-meal" class="group shrink-0 w-36 text-center">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-amber-600 to-red-800">
+          <img src="https://images.dominos.co.in/nextgen-catalog/media/prod/Dominos/CategoriesV1/1c73a70c-fcc4-4d4f-af5e-7db2e9feec32_LunchFeastCoke.png?ver=V0.0.1" 
+          alt="5 Course Meal" onerror="this.style.display='none'"
+               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
         </div>
-    </section>
+        <h3 class="mt-4 text-lg font-bold text-slate-700 leading-snug">5 Course Meal</h3>
+       
+      </a>
+ 
+      <!-- Card 2 -->
+      <a href="menu.html#big-big-pizza" class="group shrink-0 w-36 text-center">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-amber-600 to-red-800">
+          <img src="https://images.dominos.co.in/nextgen-catalog/media/prod/Dominos/CategoriesV1/ffabe9c9-6786-4501-8f16-f328cf9b7a8d_BigBigPizza_Normal.png?ver=V0.0.1" 
+          alt="Big Big Pizza" onerror="this.style.display='none'"
+               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+        </div>
+        <h3 class="mt-4 text-lg font-bold text-slate-700 leading-snug">Big Big Pizza</h3>
+        
+      </a>
+ 
+      <!-- Card 3 -->
+      <a href="menu.html#veg-pizza" class="group shrink-0 w-36 text-center">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-orange-700 to-stone-900">
+          <img src="https://images.dominos.co.in/nextgen-catalog/media/prod/Dominos/CategoriesV1/23bced69-47ec-48ea-89d7-1b5a68d29bb6_VegPizza.png?ver=V0.0.1" 
+          alt="Veg Pizza" onerror="this.style.display='none'"
+               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+        </div>
+        <h3 class="mt-4 text-lg font-bold text-slate-700 leading-snug">Veg Pizza</h3>
+      
+      </a>
+ 
+      <!-- Card 4 -->
+      <a href="menu.html#pizza-mania" class="group shrink-0 w-36 text-center">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-orange-700 to-stone-900">
+          <img src="https://images.dominos.co.in/nextgen-catalog/media/prod/Dominos/CategoriesV1/256103bc-8a01-4637-86b3-d9e63e5aab26_PizzaManianew.png?ver=V0.0.1" alt="Pizza Mania" onerror="this.style.display='none'"
+               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+        </div>
+        <h3 class="mt-4 text-lg font-bold text-slate-700 leading-snug">Pizza Mania</h3>
+       
+      </a>
+ 
+      <!-- Card 5 -->
+      <a href="menu.html#garlic-bread-dips" class="group shrink-0 w-36 text-center">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-yellow-600 to-amber-900">
+          <img src="https://images.dominos.co.in/nextgen-catalog/media/prod/Dominos/CategoriesV1/76ea3002-6964-4834-9d90-bb602184577c_garlicbread.jpg?ver=V0.0.1" 
+          alt="Garlic Bread & Dips" onerror="this.style.display='none'"
+               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+        </div>
+        <h3 class="mt-4 text-lg font-bold text-slate-700 leading-snug">Garlic Bread &amp; Dips</h3>
+      
+      </a>
+ 
+      <!-- Card 6 -->
+      <a href="menu.html#crazy-deals" class="group shrink-0 w-36 text-center">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-amber-600 to-red-800">
+          <img src="https://images.dominos.co.in/nextgen-catalog/media/prod/Dominos/CategoriesV1/e396c20d-5eb1-42a3-8abf-98cac7d51d84_LoadedSaucyRange.png?ver=V0.0.1" 
+          alt="Crazy Deals" onerror="this.style.display='none'"
+               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+        </div>
+        <h3 class="mt-4 text-lg font-bold text-slate-700 leading-snug">Crazy Deals</h3>
+        
+      </a>
+ 
+      <!-- Card 7 -->
+      <a href="menu.html#cheese-volcano" class="group shrink-0 w-36 text-center">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-orange-700 to-stone-900">
+          <img src="https://images.dominos.co.in/nextgen-catalog/media/prod/Dominos/CategoriesV1/d4426039-5b76-45a9-8940-fc268f2fbab5_cheesevolcano.jpg?ver=V0.0.1" 
+          alt="Cheese Volcano" onerror="this.style.display='none'"
+               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+        </div>
+        <h3 class="mt-4 text-lg font-bold text-slate-700 leading-snug">Cheese Volcano</h3>
+       
+      </a>
+
+      <a href="menu.html#cheese-volcano" class="group shrink-0 w-36 text-center">
+        <div class="w-36 h-36 mx-auto rounded-full overflow-hidden border-4 border-gray-100 bg-gradient-to-br from-orange-700 to-stone-900">
+          <img src="https://images.dominos.co.in/nextgen-catalog/media/prod/Dominos/CategoriesV1/ef4bdd28-8ff9-47e8-8879-bf04b8f20850_BestSellerrs.png?ver=V0.0.1" alt="Cheese Volcano" onerror="this.style.display='none'"
+               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+        </div>
+        <h3 class="mt-4 text-lg font-bold text-slate-700 leading-snug">Recommended</h3>
+        
+      </a>
+ 
+    </div>
+  </section>
 
 
-    <section class="flex gap-4 mx-10 mt-5">
 
-        <button class="flex-1 bg-black text-white py-4 rounded-2xl font-bold">
-            🛵 Delivery
-        </button>
+  <section class="px-2 mt-5">
+    <h2 class="text-3xl font-bold text-blue-950 mb-5">
+      What,Aos New
+    </h2>
 
-        <button class="flex-1 bg-white border py-4 rounded-2xl font-bold">
-            🛍️ Takeaway
-        </button>
+    <div class="overflow-hidden">
 
-        <button class="flex-1 bg-white border py-4 rounded-2xl font-bold">
-            🍽️ Dine-in
-        </button>
-    </section>
+      <div class="slider flex gap-5 w-max">
 
-    <section class="px-2 mt-5">
-        <h2 class="text-3xl font-bold text-blue-950 mb-5">
-            What are you craving?
-        </h2>
+        <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
 
-        <div class="overflow-hidden">
+          <img src="./images/veg.png" class="w-full h-full object-cover">
 
-            <div class="slider flex gap-5 w-max">
+          <div class="absolute inset-0 bg-black/30"></div>
 
-                <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/veg.png"
-                         class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
-                        VEG
-                    </h3>
-
-                </div>
-
-                <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/nonveg.avif" class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
-                        NON-VEG
-                    </h3>
-
-                </div>
-
-                <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/volcano-pizza.webp" class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
-                        CHINESE
-                    </h3>
-
-                </div>
-
-                <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/desserts.webp" class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
-                        DESSERTS
-                    </h3>
-
-                </div>
-
-                <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/drinks.png" class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
-                        DRINKS
-                    </h3>
-
-                </div>
-
-                <div class="w-[340px] h-[180px] shrink-0  rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/garlic.jpg" class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
-                        GARLIC BREAD & DIPS
-                    </h3>
-
-                </div>
-
-                  <div class="w-[340px] h-[180px] shrink-0  rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/Tacos.avif" class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6  text-white text-2xl font-bold">
-                        TACOS
-                    </h3>
-
-                </div>
-                  <div class="w-[340px] h-[180px] shrink-0  rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/bigpizza.jpg" class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
-                        BIG PIZZA
-                    </h3>
-
-                </div>
-                  <div class="w-[340px] h-[180px] shrink-0  rounded-2xl overflow-hidden relative">
-
-                    <img src="./images/dominos.png" class="w-full h-full object-cover">
-
-                    <div class="absolute inset-0 bg-black/30"></div>
-
-                    <h3 class="absolute top-7 left-6  text-white text-2xl font-bold">
-                        CHEESE LAVA
-                    </h3>
-
-                </div>
-            </div>
+          <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
+            VEG
+          </h3>
 
         </div>
 
-    </section>
+        <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
 
-    <section class="mx-10 mt-8">
+          <img src="./images/nonveg.avif" class="w-full h-full object-cover">
 
-        <h2 class="text-2xl font-bold mb-4">
-            Hot deals
-        </h2>
+          <div class="absolute inset-0 bg-black/30"></div>
 
-        <div class="grid grid-cols-4 gap-4">
-
-            <div class="bg-red-600 text-white rounded-2xl p-6 h-36 bg-[url('./images/veg.webp')]  bg-cover bg-center">
-
-                <h3 class="text-2xl font-bold">
-                    Get ₹30 OFF
-                </h3>
-
-                <p>On orders of ₹199 or more</p>
-
-                <span class="inline-block mt-4 border border-dashed px-3 py-1 rounded">
-                    WELCOME30
-                </span>
-
-            </div>
-
-
-            <div class="bg-blue-600 text-white rounded-2xl p-6 h-36 bg-[url('./images/3.jpg')]  bg-cover bg-center ">
-
-                <h3 class="text-2xl font-bold">
-                    20% OFF
-                </h3>
-
-                <p>Up to ₹100 off on ₹299+</p>
-
-                <span class="inline-block mt-4 border border-dashed px-3 py-1 rounded">
-                    PIZZA20
-                </span>
-
-            </div>
-
-
-            <div class="bg-orange-800 text-white  rounded-2xl p-6 h-36 bg-[url('./images/4.jpg')]  bg-cover bg-center">
-
-                <h3 class="text-2xl font-bold">
-                    ₹150 OFF
-                </h3>
-
-                <p>On big orders of ₹999+</p>
-
-            </div>
-
-
-            <div class="bg-purple-800 text-white  rounded-2xl p-6 h-36 bg-[url('./images/5.jpg')]  bg-cover bg-center">
-
-                <h3 class="text-2xl font-bold">
-                    Free delivery
-                </h3>
-
-                <p>On orders of ₹399 or more</p>
-
-                <span class="inline-block mt-4 border border-dashed px-3 py-1 rounded">
-                    FREEDEL
-                </span>
-
-            </div>
+          <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
+            NON-VEG
+          </h3>
 
         </div>
 
-    </section>
+        <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
 
-    <div class="fixed bottom-5 left-1/2 -translate-x-1/2  bg-black text-white rounded-full px-6 py-3  flex gap-8 items-center">
+          <img src="./images/volcano-pizza.webp" class="w-full h-full object-cover">
 
-        <button class="bg-red-600 px-5 py-2 rounded-full">
-            Home
-        </button>
+          <div class="absolute inset-0 bg-black/30"></div>
 
-        <button>Menu</button>
-        <button>Offers</button>
-        <button>Cart 🛒</button>
-        <button>Profile</button>
+          <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
+            CHINESE
+          </h3>
+
+        </div>
+
+        <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
+
+          <img src="./images/desserts.webp" class="w-full h-full object-cover">
+
+          <div class="absolute inset-0 bg-black/30"></div>
+
+          <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
+            DESSERTS
+          </h3>
+
+        </div>
+
+        <div class="w-[340px] h-[180px] shrink-0 rounded-2xl overflow-hidden relative">
+
+          <img src="./images/drinks.png" class="w-full h-full object-cover">
+
+          <div class="absolute inset-0 bg-black/30"></div>
+
+          <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
+            DRINKS
+          </h3>
+
+        </div>
+
+        <div class="w-[340px] h-[180px] shrink-0  rounded-2xl overflow-hidden relative">
+
+          <img src="./images/garlic.jpg" class="w-full h-full object-cover">
+
+          <div class="absolute inset-0 bg-black/30"></div>
+
+          <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
+            GARLIC BREAD & DIPS
+          </h3>
+
+        </div>
+
+        <div class="w-[340px] h-[180px] shrink-0  rounded-2xl overflow-hidden relative">
+
+          <img src="./images/Tacos.avif" class="w-full h-full object-cover">
+
+          <div class="absolute inset-0 bg-black/30"></div>
+
+          <h3 class="absolute top-7 left-6  text-white text-2xl font-bold">
+            TACOS
+          </h3>
+
+        </div>
+        <div class="w-[340px] h-[180px] shrink-0  rounded-2xl overflow-hidden relative">
+
+          <img src="./images/bigpizza.jpg" class="w-full h-full object-cover">
+
+          <div class="absolute inset-0 bg-black/30"></div>
+
+          <h3 class="absolute top-7 left-6 text-white text-2xl font-bold">
+            BIG PIZZA
+          </h3>
+
+        </div>
+        <div class="w-[340px] h-[180px] shrink-0  rounded-2xl overflow-hidden relative">
+
+          <img src="./images/dominos.png" class="w-full h-full object-cover">
+
+          <div class="absolute inset-0 bg-black/30"></div>
+
+          <h3 class="absolute top-7 left-6  text-white text-2xl font-bold">
+            CHEESE LAVA
+          </h3>
+
+        </div>
+      </div>
 
     </div>
 
-  <section class="bg-gradient-to-b from-white via-orange-50 to-orange-200/70 pt-3 pb-6">
+  </section>
+
+  <section class="mx-10 mt-8">
+
+    <h2 class="text-2xl font-bold mb-4">
+      Hot deals
+    </h2>
+
+    <div class="grid grid-cols-4 gap-4">
+
+      <div class="bg-red-600 text-white rounded-2xl p-6 h-36 bg-[url('./images/veg.webp')]  bg-cover bg-center">
+
+        <h3 class="text-2xl font-bold">
+          Get ₹30 OFF
+        </h3>
+
+        <p>On orders of ₹199 or more</p>
+
+        <span class="inline-block mt-4 border border-dashed px-3 py-1 rounded">
+          WELCOME30
+        </span>
+
+      </div>
+
+
+      <div class="bg-blue-600 text-white rounded-2xl p-6 h-36 bg-[url('./images/3.jpg')]  bg-cover bg-center ">
+
+        <h3 class="text-2xl font-bold">
+          20% OFF
+        </h3>
+
+        <p>Up to ₹100 off on ₹299+</p>
+
+        <span class="inline-block mt-4 border border-dashed px-3 py-1 rounded">
+          PIZZA20
+        </span>
+
+      </div>
+
+
+      <div class="bg-orange-800 text-white  rounded-2xl p-6 h-36 bg-[url('./images/4.jpg')]  bg-cover bg-center">
+
+        <h3 class="text-2xl font-bold">
+          ₹150 OFF
+        </h3>
+
+        <p>On big orders of ₹999+</p>
+
+      </div>
+
+
+      <div class="bg-purple-800 text-white  rounded-2xl p-6 h-36 bg-[url('./images/5.jpg')]  bg-cover bg-center">
+
+        <h3 class="text-2xl font-bold">
+          Free delivery
+        </h3>
+
+        <p>On orders of ₹399 or more</p>
+
+        <span class="inline-block mt-4 border border-dashed px-3 py-1 rounded">
+          FREEDEL
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <div
+    class="fixed bottom-5 left-1/2 -translate-x-1/2  bg-black text-white rounded-full px-6 py-3  flex gap-8 items-center z-40">
+
+    <button class="bg-red-600 px-5 py-2 rounded-full">
+      Home
+    </button>
+
+    <a href="menu.html"><button>Menu</button></a>
+    <a href="offers.html"><button>Offers</button></a>
+    <a href="cart.html"><button>Cart</button></a>
+    <a href="profile.html"><button>Profile</button></a>
+
+  </div>
+
+  <section class="bg-gradient-to-b from-white via-orange-50 to-orange-200/70 pt-3 pb-6 z-0">
 
     <div class="text-center">
       <div class="flex items-center justify-center gap-3">
         <span class="h-0.5 w-16 bg-amber-600/70"></span>
         <svg viewBox="0 0 64 48" class="h-10 w-12 text-amber-500" fill="currentColor" aria-hidden="true">
-          <path d="M4 40 0 10l16 14L32 0l16 24L64 10l-4 30z"/>
-          <rect x="6" y="42" width="52" height="5" rx="1"/>
+          <path d="M4 40 0 10l16 14L32 0l16 24L64 10l-4 30z" />
+          <rect x="6" y="42" width="52" height="5" rx="1" />
         </svg>
         <span class="h-0.5 w-16 bg-amber-600/70"></span>
       </div>
@@ -302,7 +418,8 @@
 
     <div class="mt-3 flex items-center justify-center gap-1.5 bg-orange-100/70 py-1.5 text-amber-900">
       <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
-        <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/>
+        <path
+          d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
       </svg>
       <span class="text-lg">In Your Locality</span>
     </div>
@@ -311,20 +428,22 @@
 
       <article class="relative h-[440px] w-[415px] shrink-0 overflow-hidden rounded-lg 
       bg-gradient-to-br from-amber-300 via-red-500 to-green-700 shadow-lg">
-        
-        <img src="images/paneer.avif" alt="Peppy Paneer pizza" 
-        class="absolute inset-0 h-full w-full object-cover" onerror="this.style.display='none'" />
-        
+
+        <img src="images/paneer.avif" alt="Peppy Paneer pizza" class="absolute inset-0 h-full w-full object-cover"
+          onerror="this.style.display='none'" />
+
         <div class="ribbon absolute right-1 top-0 z-10 w-[68px] bg-amber-400 pb-4 pt-2 text-center 
         leading-tight text-white drop-shadow">
-          
-        <p class="text-sm">Domino's</p><p class="text-lg font-medium">TOP 10</p>
-        
-    </div>
 
-        <button class="absolute right-0 top-[221px] z-10 flex items-center gap-2 rounded-l-md bg-neutral-700/70 px-3 py-1 text-sm font-semibold">
-         
-            Customise <span>&rsaquo;</span>
+          <p class="text-sm">Domino's</p>
+          <p class="text-lg font-medium">TOP 10</p>
+
+        </div>
+
+        <button
+          class="absolute right-0 top-[221px] z-10 flex items-center gap-2 rounded-l-md bg-neutral-700/70 px-3 py-1 text-sm font-semibold">
+
+          Customise <span>&rsaquo;</span>
         </button>
 
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent pt-24">
@@ -334,32 +453,44 @@
                 <span class="h-2.5 w-2.5 rounded-full bg-green-600"></span></span>
               Peppy Paneer
             </h3>
-            <p class="mt-1 text-sm leading-snug text-gray-100">Flavorful trio of juicy paneer, crisp capsicum with spicy red paprika.</p>
+            <p class="mt-1 text-sm leading-snug text-gray-100">Flavorful trio of juicy paneer, crisp capsicum with spicy
+              red paprika.</p>
           </div>
           <div class="mt-3 flex items-center justify-between bg-neutral-900/90 px-4 py-4">
             <div>
               <p class="text-2xl font-semibold text-gray-100">₹269</p>
-              <p class="mt-1 border-b border-dashed border-gray-300 pb-0.5 text-sm font-semibold text-gray-100">Regular | New Hand Tossed &rsaquo;</p>
+              <p class="mt-1 border-b border-dashed border-gray-300 pb-0.5 text-sm font-semibold text-gray-100">Regular
+                | New Hand Tossed &rsaquo;</p>
             </div>
             <button class="rounded-md bg-red-600 px-7 py-2 text-xl font-semibold hover:bg-red-700">Add +</button>
           </div>
         </div>
       </article>
 
-      <article class="relative h-[440px] w-[422px] shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-red-400 via-yellow-100 to-yellow-300 shadow-lg">
-        <img src="images/Margherita.avif" alt="Margherita pizza" class="absolute inset-0 h-full w-full object-cover" onerror="this.style.display='none'" />
-        <div class="ribbon absolute right-1 top-0 z-10 w-[68px] bg-amber-400 pb-4 pt-2 text-center leading-tight text-white drop-shadow">
-          <p class="text-sm">Domino's</p><p class="text-lg font-medium">TOP 10</p>
+      <article
+        class="relative h-[440px] w-[422px] shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-red-400 via-yellow-100 to-yellow-300 shadow-lg">
+
+        <img src="images/Margherita.avif" alt="Margherita pizza" class="absolute inset-0 h-full w-full object-cover"
+          onerror="this.style.display='none'" />
+
+        <div
+          class="ribbon absolute right-1 top-0 z-10 w-[68px] bg-amber-400 pb-4 pt-2 text-center leading-tight text-white drop-shadow">
+
+          <p class="text-sm">Domino's</p>
+          <p class="text-lg font-medium">TOP 10</p>
+
         </div>
 
-        <button class="absolute right-0 top-[241px] z-10 flex items-center gap-2 rounded-l-md bg-neutral-700/70 px-3 py-1 text-sm font-semibold">
+        <button
+          class="absolute right-0 top-[241px] z-10 flex items-center gap-2 rounded-l-md bg-neutral-700/70 px-3 py-1 text-sm font-semibold">
           Customise <span>&rsaquo;</span>
         </button>
 
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent pt-24">
           <div class="px-4">
             <h3 class="flex items-center gap-2 text-2xl font-semibold text-gray-100">
-              <span class="grid h-5 w-5 place-items-center rounded-sm border-2 border-green-500 bg-white"><span class="h-2.5 w-2.5 rounded-full bg-green-600"></span></span>
+              <span class="grid h-5 w-5 place-items-center rounded-sm border-2 border-green-500 bg-white">
+                <span class="h-2.5 w-2.5 rounded-full bg-green-600"></span></span>
               Margherita
             </h3>
             <p class="mt-1 text-sm leading-snug text-gray-100">Classic delight with 100% real mozzarella cheese.</p>
@@ -367,63 +498,80 @@
           <div class="mt-3 flex items-center justify-between bg-neutral-900/90 px-4 py-4">
             <div>
               <p class="text-2xl font-semibold text-gray-100">₹109</p>
-              <p class="mt-1 border-b border-dashed border-gray-300 pb-0.5 text-sm font-semibold text-gray-100">Regular | New Hand Tossed &rsaquo;</p>
+              <p class="mt-1 border-b border-dashed border-gray-300 pb-0.5 text-sm font-semibold text-gray-100">Regular
+                | New Hand Tossed &rsaquo;</p>
             </div>
             <button class="rounded-md bg-red-600 px-7 py-2 text-xl font-semibold hover:bg-red-700">Add +</button>
           </div>
         </div>
       </article>
 
-      <article class="relative h-[440px] w-[422px] shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-red-600 via-amber-200 to-orange-500 shadow-lg">
-        <img src="images/Farmhouse.webp" alt="Farmhouse pizza" class="absolute inset-0 h-full w-full object-cover" onerror="this.style.display='none'" />
-        <div class="ribbon absolute right-1 top-0 z-10 w-[68px] bg-amber-400 pb-4 pt-2 text-center leading-tight text-white drop-shadow">
-          <p class="text-sm">Domino's</p><p class="text-lg font-medium">TOP 10</p>
+      <article
+        class="relative h-[440px] w-[422px] shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-red-600 via-amber-200 to-orange-500 shadow-lg">
+        <img src="images/Farmhouse.webp" alt="Farmhouse pizza" class="absolute inset-0 h-full w-full object-cover"
+          onerror="this.style.display='none'" />
+        <div
+          class="ribbon absolute right-1 top-0 z-10 w-[68px] bg-amber-400 pb-4 pt-2 text-center leading-tight text-white drop-shadow">
+          <p class="text-sm">Domino's</p>
+          <p class="text-lg font-medium">TOP 10</p>
         </div>
 
-        <button class="absolute right-0 top-[221px] z-10 flex items-center gap-2 rounded-l-md bg-neutral-700/50 px-3 py-1 text-sm font-semibold">
+        <button
+          class="absolute right-0 top-[221px] z-10 flex items-center gap-2 rounded-l-md bg-neutral-700/50 px-3 py-1 text-sm font-semibold">
           Customise <span>&rsaquo;</span>
         </button>
 
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent pt-24">
           <div class="px-4">
             <h3 class="flex items-center gap-2 text-2xl font-semibold text-gray-100">
-              <span class="grid h-5 w-5 place-items-center rounded-sm border-2 border-green-500 bg-white"><span class="h-2.5 w-2.5 rounded-full bg-green-600"></span></span>
+              <span class="grid h-5 w-5 place-items-center rounded-sm border-2 border-green-500 bg-white"><span
+                  class="h-2.5 w-2.5 rounded-full bg-green-600"></span></span>
               Farmhouse
             </h3>
-            <p class="mt-1 text-sm leading-snug text-gray-100">Delightful combination of onion, capsicum, tomato &amp; grilled mushroom.</p>
+            <p class="mt-1 text-sm leading-snug text-gray-100">Delightful combination of onion, capsicum, tomato &amp;
+              grilled mushroom.</p>
           </div>
           <div class="mt-3 flex items-center justify-between bg-neutral-900/90 px-4 py-4">
             <div>
               <p class="text-2xl font-semibold text-gray-100">₹259</p>
-              <p class="mt-1 border-b border-dashed border-gray-300 pb-0.5 text-sm font-semibold text-gray-100">Regular | New Hand Tossed &rsaquo;</p>
+              <p class="mt-1 border-b border-dashed border-gray-300 pb-0.5 text-sm font-semibold text-gray-100">Regular
+                | New Hand Tossed &rsaquo;</p>
             </div>
             <button class="rounded-md bg-red-600 px-7 py-2 text-xl font-semibold hover:bg-red-700">Add +</button>
           </div>
         </div>
       </article>
 
-      <article class="relative h-[440px] w-[422px] shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-red-500 via-yellow-300 to-green-600 shadow-lg">
-        <img src="images/Veggie.jpg" alt="Veggie Paradise pizza" class="absolute inset-0 h-full w-full object-cover" onerror="this.style.display='none'" />
-        <div class="ribbon absolute right-1 top-0 z-10 w-[68px] bg-amber-400 pb-4 pt-2 text-center leading-tight text-white drop-shadow">
-          <p class="text-sm">Domino's</p><p class="text-lg font-medium">TOP 10</p>
+      <article
+        class="relative h-[440px] w-[422px] shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-red-500 via-yellow-300 to-green-600 shadow-lg">
+        <img src="images/Veggie.jpg" alt="Veggie Paradise pizza" class="absolute inset-0 h-full w-full object-cover"
+          onerror="this.style.display='none'" />
+        <div
+          class="ribbon absolute right-1 top-0 z-10 w-[68px] bg-amber-400 pb-4 pt-2 text-center leading-tight text-white drop-shadow">
+          <p class="text-sm">Domino's</p>
+          <p class="text-lg font-medium">TOP 10</p>
         </div>
 
-        <button class="absolute right-0 top-[221px] z-10 flex items-center gap-2 rounded-l-md bg-neutral-700/90 px-3 py-1 text-sm font-semibold">
+        <button
+          class="absolute right-0 top-[221px] z-10 flex items-center gap-2 rounded-l-md bg-neutral-700/90 px-3 py-1 text-sm font-semibold">
           Customise <span>&rsaquo;</span>
         </button>
 
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent pt-24">
           <div class="px-4">
             <h3 class="flex items-center gap-2 text-2xl font-semibold text-gray-100">
-              <span class="grid h-5 w-5 place-items-center rounded-sm border-2 border-green-500 bg-white"><span class="h-2.5 w-2.5 rounded-full bg-green-600"></span></span>
+              <span class="grid h-5 w-5 place-items-center rounded-sm border-2 border-green-500 bg-white"><span
+                  class="h-2.5 w-2.5 rounded-full bg-green-600"></span></span>
               Veggie Paradise
             </h3>
-            <p class="mt-1 text-sm leading-snug text-gray-100">The awesome foursome! Golden corn, black olives, capsicum, red paprika.</p>
+            <p class="mt-1 text-sm leading-snug text-gray-100">The awesome foursome! Golden corn, black olives,
+              capsicum, red paprika.</p>
           </div>
           <div class="mt-3 flex items-center justify-between bg-neutral-900/90 px-4 py-4">
             <div>
               <p class="text-2xl font-semibold text-gray-100">₹269</p>
-              <p class="mt-1 border-b border-dashed border-gray-300 pb-0.5 text-sm font-semibold text-gray-100">Regular | New Hand Tossed &rsaquo;</p>
+              <p class="mt-1 border-b border-dashed border-gray-300 pb-0.5 text-sm font-semibold text-gray-100">Regular
+                | New Hand Tossed &rsaquo;</p>
             </div>
             <button class="rounded-md bg-red-600 px-7 py-2 text-xl font-semibold hover:bg-red-700">Add +</button>
           </div>
@@ -435,5 +583,24 @@
 
   <div class="h-2.5 bg-gray-100"></div>
   <script src="script.js"></script>
+<script>
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = root.classList.toggle('dark');          // add or remove the "dark" class
+      localStorage.setItem('theme', isDark ? 'dark' : 'light'); // remember the choice
+
+
+     
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  document.getElementById('cartCount').textContent =
+    cart.reduce((sum, item) => sum + item.qty, 0);
+
+    });
+  </script>
+
+
 </body>
+
 </html>

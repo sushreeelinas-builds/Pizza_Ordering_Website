@@ -252,7 +252,7 @@
                         Don't have an account?
 
                         <a
-                            href="#"
+                            href="register.html"
                             class="text-red-500 font-semibold
                                    hover:underline">
 
@@ -269,8 +269,49 @@
         </div>
 
     </div>
+<script>
 
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+            } else {
+
+                password.type = "password";
+
+            }
+
+        }
+
+
+        function login() {
+
+            const userId =
+                document.getElementById("userId").value;
+
+            const password =
+                document.getElementById("password").value;
+
+            if (userId === "" || password === "") {
+
+                alert("Please enter User ID and Password");
+
+                return;
+
+            }
+
+            alert("Login Successful!");
+
+        }
+
+    </script>
 
 
 </body>
 </html>
+
