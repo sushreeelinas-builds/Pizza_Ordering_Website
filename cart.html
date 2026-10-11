@@ -1,275 +1,438 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cart - Domino's Pizza</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      theme: { extend: { colors: { dom: '#e31837', domdark: '#c10f2c' } } }
+      theme: {
+        extend: {
+          colors: {
+            dom: '#e31837',
+            domdark: '#c10f2c'
+          }
+        }
+      }
     };
   </script>
+
   <style>
-    body { font-family: 'Roboto', Arial, sans-serif; }
+    body {
+      font-family: Roboto, Arial, sans-serif;
+    }
   </style>
 </head>
+
 <body class="bg-[#f2f2f2] text-gray-800 min-h-screen pb-36">
 
-  <!-- Top bar -->
-  <header class="bg-white flex items-center justify-between px-3 py-5">
+  <header class="bg-white flex items-center justify-between px-4 py-5">
     <div class="flex items-center gap-4">
-      <a href="index.html" aria-label="Back" class="text-2xl leading-none">&larr;</a>
+      <a href="index.html" aria-label="Back" class="text-2xl">&larr;</a>
       <h1 class="text-xl font-semibold">Cart</h1>
     </div>
-    <a href="#" class="flex items-center gap-1.5 text-sm text-gray-500">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 15l6-6M9.5 9.5h.01M14.5 14.5h.01" stroke-linecap="round"/></svg>
-      Offers
-    </a>
+    <a href="menu.html" class="text-sm text-gray-500">Offers</a>
   </header>
 
-  <main class="max-w-6xl mx-auto px-4 pt-8 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-10">
+  <main class="max-w-6xl mx-auto px-4 pt-8 grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] gap-8">
 
-    <!-- Left: cart items -->
-    <section class="self-start">
-      <div class="bg-white rounded-2xl shadow-sm px-6 py-4">
+    <!-- CART ITEMS -->
+    <section>
+      <div class="bg-white rounded-2xl shadow-sm px-5 py-4">
         <div id="cartItems"></div>
-        <a href="menu.html" class="flex items-center gap-3 border-t border-dashed mt-2 pt-4 pb-1 font-medium">
-          <span class="text-lg leading-none">+</span> Add more items
+
+        <a href="menu.html"
+           class="flex items-center gap-3 border-t border-dashed mt-2 pt-4 pb-1 font-medium">
+          <span class="text-xl">+</span>
+          Add more items
         </a>
       </div>
     </section>
 
-    <!-- Right: savings + bill -->
+    <!-- OFFERS AND BILL -->
     <aside class="space-y-8">
 
-      <div>
-        <div class="flex items-center gap-4 mb-3">
-          <div class="flex-1 border-t border-gray-300"></div>
-          <h2 class="text-gray-600 text-lg">Savings &amp; Rewards</h2>
-          <div class="flex-1 border-t border-gray-300"></div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-sm px-6 py-4">
-          <div class="flex items-center justify-between border-t border-dashed pt-9 pb-3 text-sm">
+      <section>
+        <h2 class="text-gray-600 text-lg text-center mb-3">
+          Savings &amp; Rewards
+        </h2>
+
+        <div class="bg-white rounded-2xl shadow-sm px-5 py-4">
+          <div class="flex justify-between items-center border-b border-dashed pb-3">
             <span class="font-semibold">Best Offer</span>
-            <a href="#" class="text-gray-600">View all offers &rsaquo;</a>
+            <span class="text-sm text-gray-500">GET30</span>
           </div>
-          <div class="flex items-center gap-4 border-t border-dashed pt-4 pb-1">
-            <span class="w-12 h-12 shrink-0 bg-green-700 text-white font-bold flex items-center justify-center text-lg"
-                  style="clip-path:polygon(50% 0,62% 10%,78% 7%,84% 22%,98% 30%,92% 45%,100% 58%,88% 68%,88% 84%,72% 86%,62% 98%,50% 90%,38% 98%,28% 86%,12% 84%,12% 68%,0 58%,8% 45%,2% 30%,16% 22%,22% 7%,38% 10%)">%</span>
+
+          <div class="flex items-center gap-3 pt-4">
+            <span class="w-11 h-11 bg-green-700 text-white flex items-center justify-center font-bold text-xl rounded">
+              %
+            </span>
+
             <div class="flex-1">
-              <p id="couponTitle" class="text-lg font-medium leading-tight">Save up to ₹30 with this offer</p>
+              <p id="couponTitle" class="font-medium">Save up to ₹30 with this offer</p>
               <p id="couponCode" class="text-sm text-gray-500">GET30</p>
             </div>
-            <button id="applyBtn" class="border border-dom text-dom font-medium rounded-md px-5 py-2 hover:bg-red-50">Apply</button>
-          </div>
-        </div>
-      </div>
 
-      <div>
-        <div class="flex items-center gap-4 mb-3">
-          <div class="flex-1 border-t border-gray-300"></div>
-          <h2 class="text-gray-600 text-lg">Bill Details</h2>
-          <div class="flex-1 border-t border-gray-300"></div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-sm px-6 py-6 text-gray-600">
-          <div class="flex justify-between py-2"><span>Item(s) Total</span><span id="itemsTotal"></span></div>
-          <div id="discountRow" class="hidden flex justify-between py-2 text-green-700">
-            <span>Coupon Discount</span><span id="discountAmount"></span>
+            <button id="applyBtn"
+                    class="border border-dom text-dom rounded-md px-4 py-2">
+              Apply
+            </button>
           </div>
-          <div class="flex justify-between py-2"><span>Delivery Charges</span><span id="deliveryCharge"></span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-gray-600 text-lg text-center mb-3">Bill Details</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm px-5 py-5 text-gray-600">
+
+          <div class="flex justify-between py-2">
+            <span>Item(s) Total</span>
+            <span id="itemsTotal">₹0</span>
+          </div>
+
+          <div id="discountRow" class="hidden justify-between py-2 text-green-700">
+            <span>Coupon Discount</span>
+            <span id="discountAmount">₹0</span>
+          </div>
+
+          <div class="flex justify-between py-2">
+            <span>Delivery Charges</span>
+            <span id="deliveryCharge">₹45</span>
+          </div>
 
           <button id="taxToggle" class="flex items-center gap-2 py-2">
             Taxes &amp; Charges
-            <svg id="taxArrow" class="w-3.5 h-3.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="taxArrow">⌄</span>
           </button>
-          <div id="taxDetails" class="hidden flex justify-between text-sm pl-3 pb-2">
-            <span>GST (5%)</span><span id="taxAmount"></span>
+
+          <div id="taxDetails" class="hidden justify-between text-sm pl-3 pb-2">
+            <span>GST (5%)</span>
+            <span id="taxAmount">₹0</span>
           </div>
 
           <div class="border-t mt-3 pt-4 flex justify-between font-semibold text-gray-900">
-            <span>Total</span><span id="totalAmount"></span>
+            <span>Total</span>
+            <span id="totalAmount">₹0</span>
           </div>
 
-          
+          <p id="savingsMsg" class="text-sm text-green-700 mt-3"></p>
         </div>
-      </div>
+      </section>
+
     </aside>
   </main>
 
-  <!-- Bottom bar -->
-  <footer class="fixed bottom-0 left-0 right-0 z-40 bg-white">
-    <div class="border-t flex items-center gap-3 px-1 py-4 text-sm text-gray-600">
-      <span class="w-8 h-8 rounded-full bg-green-700 text-white font-bold text-xs flex items-center justify-center">%</span>
-      <span id="bottomCode" class="tracking-wide">WOOHOO</span>
+  <!-- BOTTOM BAR -->
+  <footer class="fixed bottom-0 left-0 right-0 bg-white z-40">
+    <div class="border-t flex items-center gap-3 px-4 py-3 text-sm text-gray-600">
+      <span class="w-8 h-8 rounded-full bg-green-700 text-white flex items-center justify-center font-bold">
+        %
+      </span>
+      <span id="bottomCode">WOOHOO</span>
     </div>
-    <button id="setLocationBtn" class="w-full bg-dom hover:bg-domdark text-white font-semibold text-lg py-5 rounded-t-lg">
+
+    <button id="setLocationBtn"
+            class="w-full bg-dom hover:bg-domdark text-white font-semibold text-lg py-5">
       Order Confirm
     </button>
   </footer>
 
-  <div id="toast" class="fixed bottom-40 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-4 py-2 rounded-full opacity-0 pointer-events-none transition-opacity z-50"></div>
+  <!-- ORDER SUCCESS POPUP -->
+  <div id="successModal"
+       class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-sm p-6 text-center shadow-xl">
+      <div class="w-16 h-16 mx-auto rounded-full bg-green-100 text-green-700 flex items-center justify-center mb-4">
+        <svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-semibold mb-1">Order Confirmed Successfully!</h3>
+      <p class="text-sm text-gray-500">Order ID</p>
+      <p id="successOrderId" class="font-semibold text-gray-800 mb-1"></p>
+      <p id="successTotal" class="text-sm text-gray-500 mb-5"></p>
+      <button id="successDoneBtn"
+              class="w-full bg-dom hover:bg-domdark text-white rounded-md py-3 font-semibold">
+        OK
+      </button>
+    </div>
+  </div>
+
+  <div id="toast"
+       class="fixed bottom-36 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-5 py-3 rounded-full opacity-0 pointer-events-none transition-opacity z-50">
+  </div>
 
 <script>
-/* ---------- CONFIG ---------- */
-const DELIVERY_FEE = 45;          // shown struck-through and FREE above the minimum
+/* CONFIGURATION */
+const DELIVERY_FEE = 45;
 const FREE_DELIVERY_MIN = 199;
 const GST_RATE = 0.05;
 const COUPONS = {
-  GET30: { label: 'Save up to ₹30 with this offer', discount: 30, minOrder: 199 }
+  GET30: { discount: 30, minOrder: 199 }
 };
 
-/* ---------- STATE ---------- */
-let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+/* LOAD CART */
+function loadCart() {
+  try {
+    const data = JSON.parse(localStorage.getItem('cart') || '[]');
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+let cart = loadCart();
 let appliedCoupon = localStorage.getItem('coupon') || null;
 
-const $ = (id) => document.getElementById(id);
-const rupee = (n) => '₹' + (Number.isInteger(n) ? n : n.toFixed(2));
-const saveCart = () => localStorage.setItem('cart', JSON.stringify(cart));
+const $ = id => document.getElementById(id);
+const money = n => '₹' + Number(n).toFixed(2);
 
-/* ---------- VEG / NON-VEG ICONS ---------- */
-const vegIcon = `<span class="inline-flex w-5 h-5 border-2 border-green-600 rounded-sm items-center justify-center shrink-0 mt-1"><span class="w-2.5 h-2.5 rounded-full bg-green-600"></span></span>`;
-const nonVegIcon = `<span class="inline-flex w-5 h-5 border-2 border-red-800 rounded-sm items-center justify-center shrink-0 mt-1"><span class="w-0 h-0 border-l-[5px] border-r-[5px] border-b-[8px] border-l-transparent border-r-transparent border-b-red-800"></span></span>`;
+/* FOOD ICONS */
+const vegIcon = `
+  <span class="w-5 h-5 border-2 border-green-600 rounded-sm
+  flex items-center justify-center shrink-0">
+    <span class="w-2.5 h-2.5 bg-green-600 rounded-full"></span>
+  </span>`;
 
-/* ---------- BILL CALCULATION ---------- */
+const nonVegIcon = `
+  <span class="w-5 h-5 border-2 border-red-700 rounded-sm
+  flex items-center justify-center shrink-0">
+    <span class="w-0 h-0 border-l-[5px] border-r-[5px]
+    border-b-[8px] border-l-transparent border-r-transparent
+    border-b-red-700"></span>
+  </span>`;
+
+/* SAFE HTML */
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[c]);
+}
+
+/* SAVE CART */
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+/* BILL CALCULATION */
 function calculateBill() {
-  const itemsTotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const itemsTotal = cart.reduce(
+    (sum, item) => sum + Number(item.price || 0) * Number(item.qty || 0),
+    0
+  );
 
-  let discount = 0;
   const coupon = COUPONS[appliedCoupon];
-  if (coupon && itemsTotal >= coupon.minOrder) {
-    discount = Math.min(coupon.discount, itemsTotal);
-  }
+  const discount = coupon && itemsTotal >= coupon.minOrder
+    ? Math.min(coupon.discount, itemsTotal)
+    : 0;
 
   const delivery = itemsTotal >= FREE_DELIVERY_MIN ? 0 : DELIVERY_FEE;
-  const taxes = +((itemsTotal - discount) * GST_RATE).toFixed(2);
-  const total = itemsTotal - discount + delivery + taxes;
+  const taxes = Number(((itemsTotal - discount) * GST_RATE).toFixed(2));
+  const total = Number((itemsTotal - discount + delivery + taxes).toFixed(2));
 
   return { itemsTotal, discount, delivery, taxes, total };
 }
 
-/* ---------- RENDER ---------- */
+/* RENDER ITEMS */
 function renderItems() {
-  // empty cart: only the "Add more items" row is shown (as in the design)
   $('cartItems').innerHTML = cart.map(item => `
-    <div class="flex items-start justify-between py-4 border-b border-dashed last:border-b-0">
-      <div class="flex items-start gap-3">
+    <div class="flex items-start justify-between gap-3 py-4 border-b border-dashed">
+      <div class="flex items-start gap-3 min-w-0">
         ${item.type === 'veg' ? vegIcon : nonVegIcon}
         <div>
-          <h3 class="text-lg font-medium leading-tight">${item.name}</h3>
-          <p class="text-xs text-gray-500 mt-1">${item.size} | ${item.crust}</p>
+          <h3 class="text-lg font-medium">${escapeHTML(item.name)}</h3>
+          <p class="text-xs text-gray-500 mt-1">
+            ${escapeHTML(item.size || '')} | ${escapeHTML(item.crust || '')}
+          </p>
         </div>
       </div>
-      <div class="flex items-center gap-8">
+
+      <div class="flex items-center gap-2 shrink-0">
         <div class="flex items-center border rounded-md">
-          <button data-dec="${item.id}" class="px-3 py-2" aria-label="Decrease quantity">&minus;</button>
-          <span class="w-6 text-center font-semibold">${item.qty}</span>
-          <button data-inc="${item.id}" class="px-3 py-2" aria-label="Increase quantity">+</button>
+          <button data-dec="${escapeHTML(item.id)}" class="px-3 py-2">−</button>
+          <span class="w-6 text-center">${Number(item.qty)}</span>
+          <button data-inc="${escapeHTML(item.id)}" class="px-3 py-2">+</button>
         </div>
-        <span class="w-16 text-right font-medium">${rupee(item.price * item.qty)}</span>
+        <span class="w-16 text-right font-medium">
+          ${money(Number(item.price) * Number(item.qty))}
+        </span>
       </div>
-    </div>`).join('');
+    </div>
+  `).join('');
 }
 
-function renderBill() {
-  const b = calculateBill();
-  const empty = cart.length === 0;
+/* RENDER COUPON */
+function renderCoupon(bill) {
+  if (appliedCoupon === 'GET30') {
+    $('couponTitle').textContent = bill.discount
+      ? `You saved ${money(bill.discount)}`
+      : 'Add items worth ₹199 to use this';
 
-  $('itemsTotal').textContent = empty ? '' : rupee(b.itemsTotal);
-  $('taxAmount').textContent = empty ? '' : rupee(b.taxes);
-  $('totalAmount').textContent = empty ? '' : rupee(b.total);
-
-  // delivery: struck-through fee + FREE (matches the design)
-  $('deliveryCharge').innerHTML = (b.delivery === 0 || empty)
-    ? `<s class="text-gray-400 mr-1">₹${DELIVERY_FEE}</s><span class="text-green-600 font-semibold">FREE</span>`
-    : rupee(b.delivery);
-
-  // coupon discount row
-  $('discountRow').classList.toggle('hidden', b.discount === 0);
-  $('discountAmount').textContent = '-' + rupee(b.discount);
-
-  // savings message in the dashed box
-  const saved = b.discount + (b.delivery === 0 && !empty ? DELIVERY_FEE : 0);
-  $('savingsIcon').classList.toggle('hidden', empty);
-  $('savingsMsg').textContent = empty
-    ? ''
-    : saved > 0
-      ? `You are saving ${rupee(saved)} on this order`
-      : `Add items worth ₹${FREE_DELIVERY_MIN} for free delivery`;
-
-  renderCoupon(b);
-}
-
-function renderCoupon(b) {
-  const coupon = COUPONS[appliedCoupon];
-  if (coupon) {
-    $('couponTitle').textContent = b.discount > 0
-      ? `You saved ${rupee(b.discount)}`
-      : `Add items worth ₹${coupon.minOrder} to use this`;
-    $('couponCode').textContent = appliedCoupon;
+    $('couponCode').textContent = 'GET30';
     $('applyBtn').textContent = 'Remove';
   } else {
-    $('couponTitle').textContent = COUPONS.GET30.label;
+    $('couponTitle').textContent = 'Save up to ₹30 with this offer';
     $('couponCode').textContent = 'GET30';
     $('applyBtn').textContent = 'Apply';
   }
+
   $('bottomCode').textContent = appliedCoupon || 'WOOHOO';
 }
 
-function renderAll() { renderItems(); renderBill(); }
+/* RENDER BILL */
+function renderBill() {
+  const bill = calculateBill();
+  const empty = cart.length === 0;
 
-/* ---------- ACTIONS ---------- */
+  $('itemsTotal').textContent = money(bill.itemsTotal);
+  $('taxAmount').textContent = money(bill.taxes);
+  $('totalAmount').textContent = money(bill.total);
+
+  $('deliveryCharge').innerHTML = bill.delivery === 0
+    ? `<s class="text-gray-400 mr-1">₹${DELIVERY_FEE}</s>
+       <span class="text-green-600 font-semibold">FREE</span>`
+    : money(bill.delivery);
+
+  $('discountRow').classList.toggle('hidden', bill.discount === 0);
+  $('discountRow').classList.toggle('flex', bill.discount > 0);
+  $('discountAmount').textContent = '-' + money(bill.discount);
+
+  const savings = bill.discount +
+    (bill.delivery === 0 && !empty ? DELIVERY_FEE : 0);
+
+  $('savingsMsg').textContent = empty
+    ? 'Add items to start your next order.'
+    : savings > 0
+      ? `You are saving ${money(savings)} on this order`
+      : 'Add items worth ₹199 for free delivery';
+
+  renderCoupon(bill);
+}
+
+/* RENDER PAGE */
+function renderAll() {
+  renderItems();
+  renderBill();
+}
+
+/* CHANGE QUANTITY */
 function changeQty(id, delta) {
-  const item = cart.find(i => i.id === id);
+  const item = cart.find(i => String(i.id) === String(id));
   if (!item) return;
-  item.qty += delta;
-  if (item.qty <= 0) cart = cart.filter(i => i.id !== id);   // remove at 0
+
+  item.qty = Number(item.qty) + delta;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(i => String(i.id) !== String(id));
+  }
+
   saveCart();
   renderAll();
 }
 
-function toggleCoupon() {
+/* CART BUTTONS */
+$('cartItems').addEventListener('click', event => {
+  const inc = event.target.closest('[data-inc]');
+  const dec = event.target.closest('[data-dec]');
+
+  if (inc) changeQty(inc.dataset.inc, 1);
+  if (dec) changeQty(dec.dataset.dec, -1);
+});
+
+/* COUPON BUTTON */
+$('applyBtn').addEventListener('click', () => {
   if (appliedCoupon) {
     appliedCoupon = null;
     localStorage.removeItem('coupon');
   } else {
     appliedCoupon = 'GET30';
-    localStorage.setItem('coupon', appliedCoupon);
+    localStorage.setItem('coupon', 'GET30');
   }
+
   renderAll();
-}
-
-let toastTimer;
-function toast(msg) {
-  const t = $('toast');
-  t.textContent = msg;
-  t.classList.remove('opacity-0');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.add('opacity-0'), 1800);
-}
-
-/* ---------- EVENTS ---------- */
-$('cartItems').addEventListener('click', (e) => {
-  const inc = e.target.closest('[data-inc]');
-  const dec = e.target.closest('[data-dec]');
-  if (inc) changeQty(+inc.dataset.inc, 1);
-  if (dec) changeQty(+dec.dataset.dec, -1);
 });
 
-$('applyBtn').addEventListener('click', toggleCoupon);
-
+/* TAX DETAILS */
 $('taxToggle').addEventListener('click', () => {
   $('taxDetails').classList.toggle('hidden');
-  $('taxArrow').classList.toggle('rotate-180');
+  $('taxDetails').classList.toggle('flex');
+  $('taxArrow').textContent =
+    $('taxDetails').classList.contains('hidden') ? '⌄' : '⌃';
 });
 
+/* MESSAGE */
+let toastTimer;
+
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').classList.remove('opacity-0');
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    $('toast').classList.add('opacity-0');
+  }, 2200);
+}
+
+/* ORDER CONFIRM
+   Saves the order, clears the cart, and shows the success popup. */
 $('setLocationBtn').addEventListener('click', () => {
-  if (cart.length === 0) { toast('Your cart is empty. Add items first.'); return; }
-  localStorage.setItem('orderSummary', JSON.stringify(calculateBill()));
-  window.location.href = 'address.html';   // change to your address page
+  if (cart.length === 0) {
+    toast('Your cart is empty. Add items first.');
+    return;
+  }
+
+  const order = {
+    orderId: 'ORD-' + Date.now(),
+    items: cart.map(item => ({ ...item })),
+    bill: calculateBill(),
+    coupon: appliedCoupon,
+    orderDate: new Date().toISOString(),
+    status: 'Confirmed'
+  };
+
+  try {
+    // Preserve the completed order separately.
+    const previousOrders = JSON.parse(
+      localStorage.getItem('orders') || '[]'
+    );
+
+    previousOrders.push(order);
+
+    localStorage.setItem('orders', JSON.stringify(previousOrders));
+    localStorage.setItem('orderSummary', JSON.stringify(order));
+
+    // Clear current cart for the next order.
+    cart = [];
+    appliedCoupon = null;
+
+    localStorage.removeItem('cart');
+    localStorage.removeItem('coupon');
+
+    // Show success popup and refresh the (now empty) cart view.
+    $('successOrderId').textContent = order.orderId;
+    $('successTotal').textContent = 'Total paid: ' + money(order.bill.total);
+    $('successModal').classList.remove('hidden');
+    renderAll();
+  } catch (error) {
+    toast('Could not save the order. Please try again.');
+  }
 });
 
+/* SUCCESS POPUP */
+$('successDoneBtn').addEventListener('click', () => {
+  $('successModal').classList.add('hidden');
+  window.location.href = 'menu.html';   // or index.html
+});
+
+/* INITIAL DISPLAY */
 renderAll();
 </script>
+
 </body>
 </html>

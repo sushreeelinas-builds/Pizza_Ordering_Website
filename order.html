@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order History - Domino's Pizza</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { dom: '#e31837', domdark: '#c10f2c' } } }
+    };
+  </script>
+  <style>
+    body { font-family: Roboto, Arial, sans-serif; }
+  </style>
+</head>
+
+<body class="bg-[#f2f2f2] text-gray-800 min-h-screen pb-10">
+
+  <header class="bg-white flex items-center justify-between px-4 py-5">
+    <div class="flex items-center gap-4">
+      <a href="menu.html" aria-label="Back" class="text-2xl">&larr;</a>
+      <h1 class="text-xl font-semibold">Order History</h1>
+    </div>
+    <button id="clearBtn" class="text-sm text-dom hidden">Clear history</button>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 pt-6">
+    <div id="orderList" class="space-y-5"></div>
+
+    <div id="emptyState" class="hidden text-center py-20 text-gray-500">
+      <div class="text-6xl mb-3">🍕</div>
+      <p class="text-lg font-semibold mb-1">No orders yet</p>
+      <p class="text-sm mb-5">Your placed orders will show up here.</p>
+      <a href="menu.html" class="inline-block bg-dom hover:bg-domdark text-white font-semibold rounded-md px-6 py-3">
+        Browse Menu
+      </a>
+    </div>
+  </main>
+
+  <div id="toast"
+       class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-5 py-3 rounded-full opacity-0 pointer-events-none transition-opacity z-50">
+  </div>
+
+<script>
+const $ = id => document.getElementById(id);
+const money = n => '₹' + Number(n || 0).toFixed(2);
+
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+}
+
+/* LOAD ORDERS (saved by cart.html under "orders") */
+function loadOrders() {
+  try {
+    const data = JSON.parse(localStorage.getItem('orders') || '[]');
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
+
+let orders = loadOrders();
+
+const vegIcon = `<span class="w-4 h-4 border-2 border-green-600 rounded-sm flex items-center justify-center shrink-0 mt-1"><span class="w-2 h-2 bg-green-600 rounded-full"></span></span>`;
+const nonVegIcon = `<span class="w-4 h-4 border-2 border-red-700 rounded-sm flex items-center justify-center shrink-0 mt-1"><span class="w-0 h-0 border-l-[4px] border-r-[4px] border-b-[7px] border-l-transparent border-r-transparent border-b-red-700"></span></span>`;
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.toLocaleString('en-IN', {
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: 'numeric', minute: '2-digit'
+  });
+}
+
+/* RENDER */
+function render() {
+  const list = $('orderList');
+  const empty = orders.length === 0;
+
+  $('emptyState').classList.toggle('hidden', !empty);
+  $('clearBtn').classList.toggle('hidden', empty);
+
+  // newest first
+  const sorted = [...orders].reverse();
+
+  list.innerHTML = sorted.map(order => {
+    const items = Array.isArray(order.items) ? order.items : [];
+    const count = items.reduce((s, i) => s + Number(i.qty || 0), 0);
+
+    return `
+    <article class="bg-white rounded-2xl shadow-sm p-5">
+      <div class="flex items-start justify-between gap-3 border-b border-dashed pb-3">
+        <div>
+          <p class="font-semibold">${escapeHTML(order.orderId)}</p>
+          <p class="text-xs text-gray-500 mt-0.5">${escapeHTML(formatDate(order.orderDate))}</p>
+        </div>
+        <span class="text-xs font-semibold bg-green-100 text-green-700 rounded-full px-3 py-1">
+          ${escapeHTML(order.status || 'Confirmed')}
+        </span>
+      </div>
+
+      <div class="py-3 space-y-3">
+        ${items.map(i => `
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-2 min-w-0">
+              ${i.type === 'veg' ? vegIcon : nonVegIcon}
+              <div>
+                <p class="font-medium leading-tight">${escapeHTML(i.name)}</p>
+                <p class="text-xs text-gray-500">
+                  ${escapeHTML(i.size || '')} | ${escapeHTML(i.crust || '')} &times; ${Number(i.qty)}
+                </p>
+              </div>
+            </div>
+            <span class="font-medium shrink-0">${money(Number(i.price) * Number(i.qty))}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="border-t border-dashed pt-3 text-sm text-gray-600 space-y-1">
+        <div class="flex justify-between"><span>Item(s) Total</span><span>${money(order.bill?.itemsTotal)}</span></div>
+        ${order.bill?.discount ? `
+          <div class="flex justify-between text-green-700">
+            <span>Coupon${order.coupon ? ' (' + escapeHTML(order.coupon) + ')' : ''}</span>
+            <span>-${money(order.bill.discount)}</span>
+          </div>` : ''}
+        <div class="flex justify-between"><span>Delivery</span><span>${order.bill?.delivery ? money(order.bill.delivery) : 'FREE'}</span></div>
+        <div class="flex justify-between"><span>Taxes &amp; Charges</span><span>${money(order.bill?.taxes)}</span></div>
+        <div class="flex justify-between font-semibold text-gray-900 text-base pt-2">
+          <span>Total (${count} item${count === 1 ? '' : 's'})</span>
+          <span>${money(order.bill?.total)}</span>
+        </div>
+      </div>
+
+      <button data-reorder="${escapeHTML(order.orderId)}"
+              class="mt-4 w-full border border-dom text-dom font-semibold rounded-md py-2 hover:bg-red-50">
+        Reorder
+      </button>
+    </article>`;
+  }).join('');
+}
+
+/* REORDER: put the same items back in the cart */
+function reorder(orderId) {
+  const order = orders.find(o => o.orderId === orderId);
+  if (!order) return;
+
+  let cart;
+  try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch { cart = []; }
+  if (!Array.isArray(cart)) cart = [];
+
+  (order.items || []).forEach(item => {
+    const existing = cart.find(c => String(c.id) === String(item.id));
+    if (existing) existing.qty = Number(existing.qty) + Number(item.qty);
+    else cart.push({ ...item });
+  });
+
+  localStorage.setItem('cart', JSON.stringify(cart));
+  window.location.href = 'cart.html';
+}
+
+let toastTimer;
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').classList.remove('opacity-0');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.add('opacity-0'), 2000);
+}
+
+/* EVENTS */
+$('orderList').addEventListener('click', e => {
+  const btn = e.target.closest('[data-reorder]');
+  if (btn) reorder(btn.dataset.reorder);
+});
+
+$('clearBtn').addEventListener('click', () => {
+  if (!confirm('Delete all order history?')) return;
+  localStorage.removeItem('orders');
+  orders = [];
+  render();
+  toast('Order history cleared');
+});
+
+render();
+</script>
+</body>
+</html>
