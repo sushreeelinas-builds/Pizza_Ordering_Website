@@ -9,31 +9,34 @@
 
 <body class="bg-[#f5efed] text-gray-900">
 
-  
-  
   <nav class="bg-white h-16 flex items-center justify-between px-4 sticky top-0 z-20">
-    <a href="index.html" class="text-2xl font-bold text-blue-900 px-6">
+    <a href="index.html" class="text-2xl font-bold text-blue-900 px-6 flex items-center gap-2">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-</svg>
-    Offer
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+      </svg>
+      Offer
     </a>
-
-    
   </nav>
 
   <main class="mx-auto max-w-6xl px-6 pb-32 pt-10">
 
     <section class="relative overflow-hidden rounded-3xl bg-black">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM3SD3xX4Sz4W0QFj_wA4y5M-99IpknhjeFCf4yCyQ0Q&s=10" alt="Fresh pepperoni pizza with basil and tomatoes"
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM3SD3xX4Sz4W0QFj_wA4y5M-99IpknhjeFCf4yCyQ0Q&s=10"
+           alt="Fresh pepperoni pizza with basil and tomatoes"
            class="h-64 w-full object-cover md:h-80" />
+
       <div class="absolute inset-0 bg-gradient-to-r from-black/10 via-black/30 to-black/80"></div>
+
       <div class="absolute inset-y-0 right-0 flex w-full flex-col justify-center p-6 text-white md:w-1/2 md:p-10">
         <span class="w-fit rounded-full bg-red-600 px-3 py-1 text-xs font-bold uppercase tracking-wider">
           Limited-time deals
         </span>
+
         <h1 class="mt-3 text-4xl font-extrabold md:text-5xl">Offers for you</h1>
-        <p class="mt-2 text-lg text-gray-200">Tap Apply and the discount is added to your cart automatically.</p>
+
+        <p class="mt-2 text-lg text-gray-200">
+          Tap Apply and the discount is added to your cart automatically.
+        </p>
       </div>
     </section>
 
@@ -57,12 +60,37 @@
   </div>
 
   <script src="script.js"></script>
+
   <script>
     const OFFERS = [
-      { icon: "🎟️", title: "Get ₹30 OFF",   desc: "On orders of ₹199 or more",                code: "WELCOME30", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxXkuS8b7NrJafSUX1pNmWkcJdGBDx4h7eYNy0b8HhqA&s=10", pos: "0% 100%" },
-      { icon: "🍕", title: "20% OFF",       desc: "Up to ₹100 off on orders of ₹299 or more", code: "PIZZA20",   img: "images/offer-hero.jpg", pos: "0% 20%" },
-      { icon: "🛵", title: "Free delivery", desc: "On orders of ₹399 or more",                code: "FREEDEL",   img: "images/offer-card.jpg", pos: "0% 55%" },
-      { icon: "🎉", title: "₹100 OFF",      desc: "On orders of ₹599 or more",                code: "BIG100",    img: "images/offer-hero.jpg", pos: "0% 85%" },
+      {
+        title: "Get ₹30 OFF",
+        desc: "On orders of ₹199 or more",
+        code: "WELCOME30",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxXkuS8b7NrJafSUX1pNmWkcJdGBDx4h7eYNy0b8HhqA&s=10",
+        pos: "0% 100%"
+      },
+      {
+        title: "20% OFF",
+        desc: "Up to ₹100 off on orders of ₹299 or more",
+        code: "PIZZA20",
+        img: "https://tse1.mm.bing.net/th/id/OIP.CjQd69O75-fAZcNjrAYsowHaHa?r=0&pid=Api&h=220&P=0",
+        pos: "0% 20%"
+      },
+      {
+        title: "Free delivery",
+        desc: "On orders of ₹399 or more",
+        code: "FREEDEL",
+        img: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/pizza-limited-offer-design-template-cf3e32c8933277fa48607dce0cdd150e_screen.jpg?ts=1686048998",
+        pos: "0% 55%"
+      },
+      {
+        title: "₹100 OFF",
+        desc: "On orders of ₹599 or more",
+        code: "BIG100",
+        img: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/pizza-offer-design-template-91e0e6118a1c301a8c74eb25ec21200c_screen.jpg?ts=1621894381",
+        pos: "0% 85%"
+      }
     ];
 
     const grid = document.getElementById("offers");
@@ -73,25 +101,38 @@
       toastEl.textContent = text;
       toastEl.classList.remove("opacity-0", "translate-y-4");
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toastEl.classList.add("opacity-0", "translate-y-4"), 2200);
+      toastTimer = setTimeout(() => {
+        toastEl.classList.add("opacity-0", "translate-y-4");
+      }, 2200);
     }
 
     function render() {
       const active = window.Cart ? Cart.coupon() : "";
+
       grid.innerHTML = OFFERS.map((o) => {
         const on = o.code === active;
+
         return `
         <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+
           <div class="relative h-32 overflow-hidden">
             <img src="${o.img}" alt="" style="object-position:${o.pos}"
                  class="h-full w-full object-cover transition duration-500 group-hover:scale-110" />
+
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+
             <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-red-600 via-orange-500 to-amber-400"></div>
           </div>
-          <div class="flex flex-1 flex-col p-6 pt-0">
-            <div class="relative -mt-7 mb-3 grid h-14 w-14 place-items-center rounded-xl bg-white text-3xl shadow-md ring-4 ring-white">${o.icon}</div>
-            <h2 class="text-2xl font-extrabold text-red-600">${o.title}</h2>
-            <p class="mt-2 min-h-12 text-slate-500">${o.desc}</p>
+
+          <div class="flex flex-1 flex-col p-6">
+
+            <h2 class="text-2xl font-extrabold text-red-600">
+              ${o.title}
+            </h2>
+
+            <p class="mt-2 min-h-12 text-slate-500">
+              ${o.desc}
+            </p>
 
             <button data-copy="${o.code}" title="Click to copy"
                     class="mt-4 w-fit rounded-lg border-2 border-dashed border-gray-800 px-3 py-1 text-sm font-bold tracking-wide hover:bg-gray-100">
@@ -102,6 +143,7 @@
                     class="mt-4 w-full rounded-full py-3 text-lg font-bold text-white transition active:scale-95 ${on ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}">
               ${on ? "Applied ✓" : "Apply offer"}
             </button>
+
           </div>
         </article>`;
       }).join("");
@@ -113,6 +155,7 @@
 
       if (apply) {
         const code = apply.dataset.apply;
+
         if (Cart.coupon() === code) {
           Cart.removeCoupon();
           toast(`${code} removed`);
@@ -127,8 +170,10 @@
       }
     });
 
-    window.addEventListener("cart:change", render); 
+    window.addEventListener("cart:change", render);
+
     render();
   </script>
+
 </body>
 </html>

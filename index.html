@@ -48,10 +48,17 @@
           class="h-20 w-auto" />
       </a>
     </h1>
+<div class="flex-1">
+  <input
+    type="text"
+    id="deliveryLocation"
+    placeholder="Set your delivery location"
+    class="w-full bg-gray-100 rounded-full px-5 py-3 text-gray-700 outline-none"
+  />
+</div>
 
-    <div class="flex-1 bg-gray-100 rounded-full px-5 py-3 text-gray-500">
-      Set your delivery location
-    </div>
+
+
 
 
     <button id="themeToggle"
@@ -382,7 +389,7 @@ categoryContainer.innerHTML = categories.map(item => `
     <a href="menu.html"><button>Menu</button></a>
     <a href="offers.html"><button>Offers</button></a>
     <a href="cart.html"><button>Cart</button></a>
-    <a href="profile.html"><button>Profile</button></a>
+    
 
   </div>
 
@@ -626,10 +633,10 @@ categoryContainer.innerHTML = categories.map(item => `
         </p>
       </div>
 
-      <button id="sidebarLoginBtn"
+      <a href="login.html"><button id="sidebarLoginBtn"
         class="shrink-0 rounded-lg bg-rose-600 px-5 py-4 text-lg font-bold text-white hover:bg-rose-700">
         Login
-      </button>
+      </button></a>
     </section>
 
     <!-- Profile Picture Options -->
@@ -657,13 +664,11 @@ categoryContainer.innerHTML = categories.map(item => `
 
     <!-- Navigation -->
     <nav class="flex-1">
-      <a href="#deals" class="block px-4 py-5 text-xl hover:bg-gray-100">Deals &amp; Offers</a>
-      <a href="#track" class="block px-4 py-5 text-xl hover:bg-gray-100">Track Current Order</a>
-      <a href="#history" class="block px-4 py-5 text-xl hover:bg-gray-100">Order History</a>
-      <a href="#terms" class="block px-4 py-5 text-xl hover:bg-gray-100">Terms &amp; Conditions</a>
-      <a href="#help" class="block px-4 py-5 text-xl hover:bg-gray-100">Need Help? Chat with Us!</a>
+      <a href="offers.html" class="block px-4 py-5 text-xl hover:bg-gray-100">Deals &amp; Offers</a>
+      <a href="order.html" class="block px-4 py-5 text-xl hover:bg-gray-100">Order History</a>
+      <a href="term.html" class="block px-4 py-5 text-xl hover:bg-gray-100">Terms &amp; Conditions</a>
       <a href="#bulk" class="block px-4 py-5 text-xl hover:bg-gray-100">Bulk Order</a>
-      <a href="#nutrition" class="block px-4 py-5 text-xl hover:bg-gray-100">Nutritional Information</a>
+      <a href="Nutritional.html" class="block px-4 py-5 text-xl hover:bg-gray-100">Nutritional Information</a>
 
       <button id="logoutBtn"
         class="mx-4 mb-6 mt-2 hidden w-[calc(100%-2rem)] rounded-lg bg-rose-600 px-4 py-4 text-left text-lg font-semibold text-white hover:bg-rose-700">
