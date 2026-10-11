@@ -1,191 +1,262 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Order History - Domino's Pizza</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order History - Pizza Store</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
     tailwind.config = {
-      theme: { extend: { colors: { dom: '#e31837', domdark: '#c10f2c' } } }
+      theme: {
+        extend: {
+          colors: {
+            dom: "#e31837"
+          }
+        }
+      }
     };
   </script>
-  <style>
-    body { font-family: Roboto, Arial, sans-serif; }
-  </style>
 </head>
 
-<body class="bg-[#f2f2f2] text-gray-800 min-h-screen pb-10">
+<body class="bg-gray-100 min-h-screen text-gray-800">
 
-  <header class="bg-white flex items-center justify-between px-4 py-5">
-    <div class="flex items-center gap-4">
-      <a href="index.html" aria-label="Back" class="text-2xl">&larr;</a>
-      <h1 class="text-xl font-semibold">Order History</h1>
+  <!-- HEADER -->
+  <header class="bg-white shadow-sm px-4 py-5">
+    <div class="max-w-4xl mx-auto flex items-center gap-4">
+      <button onclick="goBack()"
+        class="text-2xl font-bold"
+        aria-label="Go back">
+        &larr;
+      </button>
+
+      <div>
+        <h1 class="text-2xl font-bold">Order History</h1>
+        <p class="text-sm text-gray-500">
+          View your previously ordered pizzas
+        </p>
+      </div>
     </div>
-    <button id="clearBtn" class="text-sm text-dom hidden">Clear history</button>
   </header>
 
-  <main class="max-w-3xl mx-auto px-4 pt-6">
-    <div id="orderList" class="space-y-5"></div>
+  <!-- ORDER HISTORY -->
+  <main class="max-w-4xl mx-auto px-4 py-6">
 
-    <div id="emptyState" class="hidden text-center py-20 text-gray-500">
-      <div class="text-6xl mb-3">🍕</div>
-      <p class="text-lg font-semibold mb-1">No orders yet</p>
-      <p class="text-sm mb-5">Your placed orders will show up here.</p>
-      <a href="menu.html" class="inline-block bg-dom hover:bg-domdark text-white font-semibold rounded-md px-6 py-3">
-        Browse Menu
+    <a href="index.html"><div class="flex justify-between items-center mb-5">
+      <h2 class="text-lg font-bold">My Orders</h2></a>
+
+      <button onclick="renderOrders()"
+        class="border border-dom text-dom rounded-lg px-4 py-2">
+        Refresh
+      </button>
+    </div>
+
+    <div id="ordersContainer"></div>
+
+    <div class="text-center mt-8">
+      <a href="menu.html"
+        class="inline-block bg-dom text-white font-semibold rounded-lg px-6 py-3">
+        Order More Pizzas
       </a>
     </div>
+
   </main>
 
-  <div id="toast"
-       class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-5 py-3 rounded-full opacity-0 pointer-events-none transition-opacity z-50">
-  </div>
+  <script>
+    // ====================================
+    // READ DATA FROM LOCAL STORAGE
+    // ====================================
 
-<script>
-const $ = id => document.getElementById(id);
-const money = n => '₹' + Number(n || 0).toFixed(2);
+    function readStorage(key, fallback) {
+      try {
+        const value = JSON.parse(localStorage.getItem(key));
+        return value ?? fallback;
+      } catch {
+        return fallback;
+      }
+    }
 
-function escapeHTML(value) {
-  return String(value ?? '').replace(/[&<>"']/g, c => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  })[c]);
-}
+    function money(amount) {
+      return "₹" + (Number(amount) || 0).toFixed(2);
+    }
 
-/* LOAD ORDERS (saved by cart.html under "orders") */
-function loadOrders() {
-  try {
-    const data = JSON.parse(localStorage.getItem('orders') || '[]');
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
-}
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
 
-let orders = loadOrders();
+    // ====================================
+    // BACK BUTTON
+    // ====================================
 
-const vegIcon = `<span class="w-4 h-4 border-2 border-green-600 rounded-sm flex items-center justify-center shrink-0 mt-1"><span class="w-2 h-2 bg-green-600 rounded-full"></span></span>`;
-const nonVegIcon = `<span class="w-4 h-4 border-2 border-red-700 rounded-sm flex items-center justify-center shrink-0 mt-1"><span class="w-0 h-0 border-l-[4px] border-r-[4px] border-b-[7px] border-l-transparent border-r-transparent border-b-red-700"></span></span>`;
+    function goBack() {
+      if (history.length > 1) {
+        history.back();
+      } else {
+        window.location.href = "index.html";
+      }
+    }
 
-function formatDate(iso) {
-  const d = new Date(iso);
-  if (isNaN(d)) return '';
-  return d.toLocaleString('en-IN', {
-    day: 'numeric', month: 'short', year: 'numeric',
-    hour: 'numeric', minute: '2-digit'
-  });
-}
+    // ====================================
+    // DISPLAY ALL PREVIOUS ORDERS
+    // ====================================
 
-/* RENDER */
-function render() {
-  const list = $('orderList');
-  const empty = orders.length === 0;
+    function renderOrders() {
+      const container = document.getElementById("ordersContainer");
 
-  $('emptyState').classList.toggle('hidden', !empty);
-  $('clearBtn').classList.toggle('hidden', empty);
+      const orders = readStorage("orders", []);
+      const orderItems = readStorage("order_items", []);
 
-  // newest first
-  const sorted = [...orders].reverse();
+      if (!Array.isArray(orders) || orders.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl shadow-sm p-8 text-center">
+            <div class="text-6xl mb-4">🍕</div>
 
-  list.innerHTML = sorted.map(order => {
-    const items = Array.isArray(order.items) ? order.items : [];
-    const count = items.reduce((s, i) => s + Number(i.qty || 0), 0);
+            <h2 class="text-xl font-bold">
+              No orders yet
+            </h2>
 
-    return `
-    <article class="bg-white rounded-2xl shadow-sm p-5">
-      <div class="flex items-start justify-between gap-3 border-b border-dashed pb-3">
-        <div>
-          <p class="font-semibold">${escapeHTML(order.orderId)}</p>
-          <p class="text-xs text-gray-500 mt-0.5">${escapeHTML(formatDate(order.orderDate))}</p>
-        </div>
-        <span class="text-xs font-semibold bg-green-100 text-green-700 rounded-full px-3 py-1">
-          ${escapeHTML(order.status || 'Confirmed')}
-        </span>
-      </div>
+            <p class="text-gray-500 mt-2">
+              Once you confirm an order, it will appear here.
+            </p>
 
-      <div class="py-3 space-y-3">
-        ${items.map(i => `
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex items-start gap-2 min-w-0">
-              ${i.type === 'veg' ? vegIcon : nonVegIcon}
+            <a href="menu.html"
+              class="inline-block mt-5 bg-dom text-white rounded-lg px-6 py-3 font-semibold">
+              Explore Menu
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      // Show latest order first.
+      const sortedOrders = [...orders].sort((a, b) => {
+        const dateA = new Date(a.order_date || 0).getTime();
+        const dateB = new Date(b.order_date || 0).getTime();
+
+        return dateB - dateA;
+      });
+
+      container.innerHTML = sortedOrders.map(order => {
+        const items = Array.isArray(orderItems)
+          ? orderItems.filter(item =>
+              String(item.order_id) === String(order.order_id)
+            )
+          : [];
+
+        const parsedDate = new Date(order.order_date);
+
+        const formattedDate =
+          order.order_date && !Number.isNaN(parsedDate.getTime())
+            ? parsedDate.toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+              })
+            : "Date unavailable";
+
+        return `
+          <article class="bg-white rounded-2xl shadow-sm p-5 mb-5">
+
+            <!-- ORDER INFORMATION -->
+            <div class="flex flex-col sm:flex-row
+                        sm:justify-between gap-3 border-b pb-4">
+
               <div>
-                <p class="font-medium leading-tight">${escapeHTML(i.name)}</p>
-                <p class="text-xs text-gray-500">
-                  ${escapeHTML(i.size || '')} | ${escapeHTML(i.crust || '')} &times; ${Number(i.qty)}
+                <p class="text-sm text-gray-500">Order ID</p>
+
+                <h3 class="font-bold text-lg break-all">
+                  ${escapeHTML(order.order_id || "Unavailable")}
+                </h3>
+
+                <p class="text-sm text-gray-500 mt-2">
+                  ${escapeHTML(formattedDate)}
+                </p>
+              </div>
+
+              <div class="sm:text-right">
+                <span class="inline-block bg-green-100 text-green-700
+                             rounded-full px-3 py-1 text-sm font-semibold">
+                  ${escapeHTML(order.status || "Confirmed")}
+                </span>
+
+                <p class="text-xl font-bold mt-2">
+                  ${money(order.total_amount)}
                 </p>
               </div>
             </div>
-            <span class="font-medium shrink-0">${money(Number(i.price) * Number(i.qty))}</span>
-          </div>
-        `).join('')}
-      </div>
 
-      <div class="border-t border-dashed pt-3 text-sm text-gray-600 space-y-1">
-        <div class="flex justify-between"><span>Item(s) Total</span><span>${money(order.bill?.itemsTotal)}</span></div>
-        ${order.bill?.discount ? `
-          <div class="flex justify-between text-green-700">
-            <span>Coupon${order.coupon ? ' (' + escapeHTML(order.coupon) + ')' : ''}</span>
-            <span>-${money(order.bill.discount)}</span>
-          </div>` : ''}
-        <div class="flex justify-between"><span>Delivery</span><span>${order.bill?.delivery ? money(order.bill.delivery) : 'FREE'}</span></div>
-        <div class="flex justify-between"><span>Taxes &amp; Charges</span><span>${money(order.bill?.taxes)}</span></div>
-        <div class="flex justify-between font-semibold text-gray-900 text-base pt-2">
-          <span>Total (${count} item${count === 1 ? '' : 's'})</span>
-          <span>${money(order.bill?.total)}</span>
-        </div>
-      </div>
+            <!-- ORDERED PRODUCTS -->
+            <div class="py-4">
+              <h4 class="font-bold mb-3">Ordered Items</h4>
 
-      <button data-reorder="${escapeHTML(order.orderId)}"
-              class="mt-4 w-full border border-dom text-dom font-semibold rounded-md py-2 hover:bg-red-50">
-        Reorder
-      </button>
-    </article>`;
-  }).join('');
-}
+              ${
+                items.length > 0
+                  ? items.map(item => `
+                    <div class="flex justify-between items-start
+                                gap-4 py-3 border-b border-dashed">
 
-/* REORDER: put the same items back in the cart */
-function reorder(orderId) {
-  const order = orders.find(o => o.orderId === orderId);
-  if (!order) return;
+                      <div class="min-w-0">
+                        <p class="font-semibold break-words">
+                          🍕 ${escapeHTML(item.product_name || "Pizza")}
+                        </p>
 
-  let cart;
-  try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch { cart = []; }
-  if (!Array.isArray(cart)) cart = [];
+                        <p class="text-sm text-gray-500 mt-1">
+                          Quantity: ${Number(item.quantity) || 0}
+                          × ${money(item.unit_price)}
+                        </p>
+                      </div>
 
-  (order.items || []).forEach(item => {
-    const existing = cart.find(c => String(c.id) === String(item.id));
-    if (existing) existing.qty = Number(existing.qty) + Number(item.qty);
-    else cart.push({ ...item });
-  });
+                      <p class="font-semibold whitespace-nowrap">
+                        ${money(item.subtotal)}
+                      </p>
+                    </div>
+                  `).join("")
+                  : `
+                    <p class="text-gray-500 text-sm">
+                      Product details are unavailable for this order.
+                    </p>
+                  `
+              }
+            </div>
 
-  localStorage.setItem('cart', JSON.stringify(cart));
-  window.location.href = 'cart.html';
-}
+            <!-- ORDER TOTAL -->
+            <div class="flex justify-between items-center pt-2">
+              <span class="text-gray-500">
+                ${items.length} product record(s)
+              </span>
 
-let toastTimer;
-function toast(message) {
-  $('toast').textContent = message;
-  $('toast').classList.remove('opacity-0');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => $('toast').classList.add('opacity-0'), 2000);
-}
+              <div class="text-right">
+                <p class="text-sm text-gray-500">Order Total</p>
+                <p class="text-lg font-bold">
+                  ${money(order.total_amount)}
+                </p>
+              </div>
+            </div>
 
-/* EVENTS */
-$('orderList').addEventListener('click', e => {
-  const btn = e.target.closest('[data-reorder]');
-  if (btn) reorder(btn.dataset.reorder);
-});
+          </article>
+        `;
+      }).join("");
+    }
 
-$('clearBtn').addEventListener('click', () => {
-  if (!confirm('Delete all order history?')) return;
-  localStorage.removeItem('orders');
-  orders = [];
-  render();
-  toast('Order history cleared');
-});
+    // Initial display
+    renderOrders();
 
-render();
-</script>
+    // Update if another tab changes local storage.
+    window.addEventListener("storage", event => {
+      if (event.key === "orders" || event.key === "order_items") {
+        renderOrders();
+      }
+    });
+  </script>
+
 </body>
 </html>
