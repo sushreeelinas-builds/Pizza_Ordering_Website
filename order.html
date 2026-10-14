@@ -1,262 +1,286 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order History - Pizza Store</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order History - Domino's Pizza</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
   <script>
     tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            dom: "#e31837"
-          }
-        }
-      }
+      theme: { extend: { colors: { dom: '#e31837', domdark: '#c10f2c' } } }
     };
   </script>
+  <style>
+    body { font-family: Roboto, Arial, sans-serif; }
+  </style>
 </head>
+<body class="bg-[#f2f2f2] text-gray-800 min-h-screen pb-28">
 
-<body class="bg-gray-100 min-h-screen text-gray-800">
-
-  <!-- HEADER -->
-  <header class="bg-white shadow-sm px-4 py-5">
-    <div class="max-w-4xl mx-auto flex items-center gap-4">
-      <button onclick="goBack()"
-        class="text-2xl font-bold"
-        aria-label="Go back">
-        &larr;
-      </button>
-
+  <header class="bg-white flex items-center justify-between px-4 py-5 sticky top-0 z-30 shadow-sm">
+    <div class="flex items-center gap-4">
+      <a href="index.html" aria-label="Back" class="text-2xl">&larr;</a>
       <div>
-        <h1 class="text-2xl font-bold">Order History</h1>
-        <p class="text-sm text-gray-500">
-          View your previously ordered pizzas
-        </p>
+        <h1 class="text-xl font-semibold">Order History</h1>
+        <p class="text-xs text-gray-500">Your previously placed orders</p>
       </div>
     </div>
+    <a href="menu.html" class="text-sm text-dom font-semibold">Menu</a>
   </header>
-
-  <!-- ORDER HISTORY -->
-  <main class="max-w-4xl mx-auto px-4 py-6">
-
-    <a href="index.html"><div class="flex justify-between items-center mb-5">
-      <h2 class="text-lg font-bold">My Orders</h2></a>
-
-      <button onclick="renderOrders()"
-        class="border border-dom text-dom rounded-lg px-4 py-2">
-        Refresh
+  <main class="max-w-3xl mx-auto px-4 pt-6">
+    <div class="flex items-center justify-between mb-4 gap-3">
+      <h2 id="summary" class="text-lg font-semibold">My Orders</h2>
+      <button id="clearBtn"
+        class="hidden border border-gray-300 text-gray-600 rounded-md px-4 py-2 text-sm font-medium hover:bg-gray-200">
+        Clear history
       </button>
     </div>
-
     <div id="ordersContainer"></div>
-
     <div class="text-center mt-8">
       <a href="menu.html"
-        class="inline-block bg-dom text-white font-semibold rounded-lg px-6 py-3">
+        class="inline-block bg-dom hover:bg-domdark text-white font-semibold rounded-md px-8 py-3">
         Order More Pizzas
       </a>
     </div>
-
   </main>
+  <div id="toast"
+    class="fixed bottom-28 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-5 py-3 rounded-full opacity-0 pointer-events-none transition-opacity z-50">
+  </div>
+
+  <div class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-black text-white rounded-full px-6 py-3 flex gap-8 items-center z-40">
+    <a href="index.html"><button>Home</button></a>
+    <a href="menu.html"><button>Menu</button></a>
+    <a href="offers.html"><button>Offers</button></a>
+    <a href="cart.html"><button>Cart</button></a>
+  </div>
 
   <script>
-    // ====================================
-    // READ DATA FROM LOCAL STORAGE
-    // ====================================
+    const ORDERS_KEY = "orders";
+    const CART_KEY = "cart";
+
+    const $ = id => document.getElementById(id);
+    const money = n => "₹" + (Number(n) || 0).toFixed(2);
 
     function readStorage(key, fallback) {
       try {
-        const value = JSON.parse(localStorage.getItem(key));
-        return value ?? fallback;
+        const v = JSON.parse(localStorage.getItem(key));
+        return v ?? fallback;
       } catch {
         return fallback;
       }
     }
 
-    function money(amount) {
-      return "₹" + (Number(amount) || 0).toFixed(2);
-    }
-
     function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[char]);
+      return String(value ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[c]);
     }
 
-    // ====================================
-    // BACK BUTTON
-    // ====================================
-
-    function goBack() {
-      if (history.length > 1) {
-        history.back();
-      } else {
-        window.location.href = "index.html";
-      }
+    let toastTimer;
+    function toast(msg) {
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.remove("opacity-0");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.add("opacity-0"), 2000);
     }
 
-    // ====================================
-    // DISPLAY ALL PREVIOUS ORDERS
-    // ====================================
+    const vegIcon = `<span class="w-5 h-5 border-2 border-green-600 rounded-sm flex items-center justify-center shrink-0"><span class="w-2.5 h-2.5 bg-green-600 rounded-full"></span></span>`;
+    const nonVegIcon = `<span class="w-5 h-5 border-2 border-red-700 rounded-sm flex items-center justify-center shrink-0"><span class="w-0 h-0 border-l-[5px] border-r-[5px] border-b-[8px] border-l-transparent border-r-transparent border-b-red-700"></span></span>`;
+
+    function normalizeOrder(o) {
+      const items = (Array.isArray(o.items) ? o.items : Array.isArray(o.cart) ? o.cart : []).map(i => ({
+        id: i.id ?? i.product_id,
+        name: i.name ?? i.product_name ?? "Pizza",
+        price: Number(i.price ?? i.unit_price) || 0,
+        mrp: i.mrp,
+        size: i.size,
+        crust: i.crust,
+        type: i.type,
+        qty: Number(i.qty ?? i.quantity) || 0
+      }));
+
+      const itemsTotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+      const b = o.bill || {};
+
+      return {
+        id: o.orderId ?? o.order_id ?? o.id ?? "Unavailable",
+        date: o.orderDate ?? o.order_date ?? o.date,
+        status: o.status || "Confirmed",
+        coupon: o.coupon,
+        items,
+        bill: {
+          itemsTotal: b.itemsTotal ?? itemsTotal,
+          discount: Number(b.discount) || 0,
+          delivery: Number(b.delivery) || 0,
+          taxes: Number(b.taxes) || 0,
+          total: b.total ?? o.total_amount ?? o.total ?? itemsTotal
+        }
+      };
+    }
+
+    function formatDate(value) {
+      const d = new Date(value);
+      if (!value || Number.isNaN(d.getTime())) return "Date unavailable";
+      return d.toLocaleString("en-IN", {
+        day: "2-digit", month: "short", year: "numeric",
+        hour: "2-digit", minute: "2-digit"
+      });
+    }
 
     function renderOrders() {
-      const container = document.getElementById("ordersContainer");
+      const container = $("ordersContainer");
+      const raw = readStorage(ORDERS_KEY, []);
+      const orders = (Array.isArray(raw) ? raw : []).map(normalizeOrder);
 
-      const orders = readStorage("orders", []);
-      const orderItems = readStorage("order_items", []);
-
-      if (!Array.isArray(orders) || orders.length === 0) {
+      if (orders.length === 0) {
+        $("summary").textContent = "My Orders";
+        $("clearBtn").classList.add("hidden");
         container.innerHTML = `
           <div class="bg-white rounded-2xl shadow-sm p-8 text-center">
             <div class="text-6xl mb-4">🍕</div>
-
-            <h2 class="text-xl font-bold">
-              No orders yet
-            </h2>
-
-            <p class="text-gray-500 mt-2">
-              Once you confirm an order, it will appear here.
-            </p>
-
+            <h2 class="text-xl font-semibold">No orders yet</h2>
+            <p class="text-gray-500 mt-2">Once you confirm an order, it will appear here.</p>
             <a href="menu.html"
-              class="inline-block mt-5 bg-dom text-white rounded-lg px-6 py-3 font-semibold">
+              class="inline-block mt-5 bg-dom hover:bg-domdark text-white rounded-md px-6 py-3 font-semibold">
               Explore Menu
             </a>
-          </div>
-        `;
+          </div>`;
         return;
       }
 
-      // Show latest order first.
-      const sortedOrders = [...orders].sort((a, b) => {
-        const dateA = new Date(a.order_date || 0).getTime();
-        const dateB = new Date(b.order_date || 0).getTime();
+      $("clearBtn").classList.remove("hidden");
+      $("summary").textContent = `My Orders (${orders.length})`;
 
-        return dateB - dateA;
-      });
+      orders.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
-      container.innerHTML = sortedOrders.map(order => {
-        const items = Array.isArray(orderItems)
-          ? orderItems.filter(item =>
-              String(item.order_id) === String(order.order_id)
-            )
-          : [];
+      container.innerHTML = orders.map(order => {
+        const count = order.items.reduce((s, i) => s + i.qty, 0);
 
-        const parsedDate = new Date(order.order_date);
-
-        const formattedDate =
-          order.order_date && !Number.isNaN(parsedDate.getTime())
-            ? parsedDate.toLocaleString("en-IN", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit"
-              })
-            : "Date unavailable";
+        const itemsHTML = order.items.length
+          ? order.items.map(i => `
+              <div class="flex items-start justify-between gap-3 py-3 border-b border-dashed last:border-b-0">
+                <div class="flex items-start gap-3 min-w-0">
+                  ${i.type === "veg" ? vegIcon : nonVegIcon}
+                  <div class="min-w-0">
+                    <h4 class="font-medium break-words">${escapeHTML(i.name)}</h4>
+                    <p class="text-xs text-gray-500 mt-1">
+                      ${i.size || i.crust ? `${escapeHTML(i.size || "")} | ${escapeHTML(i.crust || "")} &nbsp;•&nbsp; ` : ""}Qty ${i.qty} × ${money(i.price)}
+                    </p>
+                  </div>
+                </div>
+                <span class="font-medium whitespace-nowrap">${money(i.price * i.qty)}</span>
+              </div>`).join("")
+          : `<p class="text-sm text-gray-500 py-2">Product details are unavailable for this order.</p>`;
 
         return `
-          <article class="bg-white rounded-2xl shadow-sm p-5 mb-5">
+          <article class="bg-white rounded-2xl shadow-sm px-5 py-4 mb-5">
 
-            <!-- ORDER INFORMATION -->
-            <div class="flex flex-col sm:flex-row
-                        sm:justify-between gap-3 border-b pb-4">
-
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-3 border-b pb-4">
               <div>
-                <p class="text-sm text-gray-500">Order ID</p>
-
-                <h3 class="font-bold text-lg break-all">
-                  ${escapeHTML(order.order_id || "Unavailable")}
-                </h3>
-
-                <p class="text-sm text-gray-500 mt-2">
-                  ${escapeHTML(formattedDate)}
-                </p>
+                <p class="text-xs text-gray-500">Order ID</p>
+                <h3 class="font-semibold text-lg break-all">${escapeHTML(order.id)}</h3>
+                <p class="text-sm text-gray-500 mt-1">${escapeHTML(formatDate(order.date))}</p>
               </div>
-
               <div class="sm:text-right">
-                <span class="inline-block bg-green-100 text-green-700
-                             rounded-full px-3 py-1 text-sm font-semibold">
-                  ${escapeHTML(order.status || "Confirmed")}
+                <span class="inline-block bg-green-100 text-green-700 rounded-full px-3 py-1 text-sm font-semibold">
+                  ${escapeHTML(order.status)}
                 </span>
-
-                <p class="text-xl font-bold mt-2">
-                  ${money(order.total_amount)}
-                </p>
+                <p class="text-xl font-bold mt-2">${money(order.bill.total)}</p>
+                <p class="text-xs text-gray-500">${count} item${count === 1 ? "" : "s"}</p>
               </div>
             </div>
 
-            <!-- ORDERED PRODUCTS -->
-            <div class="py-4">
-              <h4 class="font-bold mb-3">Ordered Items</h4>
-
-              ${
-                items.length > 0
-                  ? items.map(item => `
-                    <div class="flex justify-between items-start
-                                gap-4 py-3 border-b border-dashed">
-
-                      <div class="min-w-0">
-                        <p class="font-semibold break-words">
-                          🍕 ${escapeHTML(item.product_name || "Pizza")}
-                        </p>
-
-                        <p class="text-sm text-gray-500 mt-1">
-                          Quantity: ${Number(item.quantity) || 0}
-                          × ${money(item.unit_price)}
-                        </p>
-                      </div>
-
-                      <p class="font-semibold whitespace-nowrap">
-                        ${money(item.subtotal)}
-                      </p>
-                    </div>
-                  `).join("")
-                  : `
-                    <p class="text-gray-500 text-sm">
-                      Product details are unavailable for this order.
-                    </p>
-                  `
-              }
+            <div class="pt-3">
+              <h4 class="text-sm font-semibold text-gray-600 mb-1">Ordered Items</h4>
+              ${itemsHTML}
             </div>
 
-            <!-- ORDER TOTAL -->
-            <div class="flex justify-between items-center pt-2">
-              <span class="text-gray-500">
-                ${items.length} product record(s)
-              </span>
-
-              <div class="text-right">
-                <p class="text-sm text-gray-500">Order Total</p>
-                <p class="text-lg font-bold">
-                  ${money(order.total_amount)}
-                </p>
+            <div class="border-t mt-2 pt-3 text-sm text-gray-600 space-y-1">
+              <div class="flex justify-between"><span>Item(s) Total</span><span>${money(order.bill.itemsTotal)}</span></div>
+              ${order.bill.discount > 0 ? `
+              <div class="flex justify-between text-green-700">
+                <span>Coupon Discount${order.coupon ? ` (${escapeHTML(order.coupon)})` : ""}</span>
+                <span>-${money(order.bill.discount)}</span>
+              </div>` : ""}
+              <div class="flex justify-between">
+                <span>Delivery Charges</span>
+                <span>${order.bill.delivery === 0 ? '<span class="text-green-600 font-semibold">FREE</span>' : money(order.bill.delivery)}</span>
+              </div>
+              <div class="flex justify-between"><span>Taxes (GST 5%)</span><span>${money(order.bill.taxes)}</span></div>
+              <div class="flex justify-between border-t pt-2 mt-2 font-semibold text-gray-900 text-base">
+                <span>Total Paid</span><span>${money(order.bill.total)}</span>
               </div>
             </div>
 
-          </article>
-        `;
+            <div class="flex gap-3 mt-4">
+              <button data-reorder="${escapeHTML(order.id)}"
+                class="${order.items.length ? "" : "hidden"} flex-1 border border-dom text-dom hover:bg-red-50 rounded-md py-2 font-semibold">
+                Reorder
+              </button>
+              <button data-delete="${escapeHTML(order.id)}"
+                class="border border-gray-300 text-gray-600 hover:bg-gray-100 rounded-md px-4 py-2 text-sm">
+                Delete
+              </button>
+            </div>
+          </article>`;
       }).join("");
     }
 
-    // Initial display
-    renderOrders();
+    function findOrder(id) {
+      const raw = readStorage(ORDERS_KEY, []);
+      return raw.find(o => String(o.orderId ?? o.order_id ?? o.id) === String(id));
+    }
 
-    // Update if another tab changes local storage.
-    window.addEventListener("storage", event => {
-      if (event.key === "orders" || event.key === "order_items") {
-        renderOrders();
-      }
+    function reorder(id) {
+      const order = findOrder(id);
+      if (!order) return;
+
+      const items = normalizeOrder(order).items;
+      const cart = readStorage(CART_KEY, []);
+
+      items.forEach(i => {
+        const existing = cart.find(c => String(c.id) === String(i.id));
+        if (existing) existing.qty = Number(existing.qty) + i.qty;
+        else cart.push({
+          id: i.id, name: i.name, price: i.price, mrp: i.mrp,
+          size: i.size, crust: i.crust, type: i.type, qty: i.qty
+        });
+      });
+
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      toast("Items added to your cart");
+      setTimeout(() => (window.location.href = "cart.html"), 700);
+    }
+
+    function deleteOrder(id) {
+      if (!confirm("Delete this order from your history?")) return;
+      const raw = readStorage(ORDERS_KEY, []);
+      const kept = raw.filter(o => String(o.orderId ?? o.order_id ?? o.id) !== String(id));
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(kept));
+      renderOrders();
+    }
+
+    $("ordersContainer").addEventListener("click", e => {
+      const re = e.target.closest("[data-reorder]");
+      const del = e.target.closest("[data-delete]");
+      if (re) reorder(re.dataset.reorder);
+      if (del) deleteOrder(del.dataset.delete);
     });
-  </script>
 
+    $("clearBtn").addEventListener("click", () => {
+      if (!confirm("Delete your entire order history? This cannot be undone.")) return;
+      localStorage.removeItem(ORDERS_KEY);
+      localStorage.removeItem("orderSummary");
+      renderOrders();
+    });
+
+    // Refresh automatically if another tab changes orders
+    window.addEventListener("storage", e => {
+      if (e.key === ORDERS_KEY) renderOrders();
+    });
+
+    renderOrders();
+  </script>
 </body>
+
 </html>

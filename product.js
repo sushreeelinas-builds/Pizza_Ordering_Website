@@ -253,7 +253,6 @@ const menuData = {
     }
 };
 
-// Automatically assign unique IDs to all menu items.
 let nextId = 1;
 
 Object.values(menuData).forEach(category => {

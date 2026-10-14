@@ -69,115 +69,109 @@ Copy the complete code below into your `index.html` file and open it in your bro
         }
     </style>
 </head>
-
 <body class="bg-white text-gray-800 pb-16">
-
-    <!-- HEADER -->
     <header class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <div class="flex items-center gap-5">
             <button class="text-2xl" aria-label="Back">←</button>
             <h1 class="text-xl font-bold">Domino's Pizza</h1>
         </div>
 
-        <button
-            id="searchBtn"
-            class="w-10 h-10 rounded-full border border-gray-200 text-2xl"
-            aria-label="Search">
+        <button id="searchBtn" class="w-10 h-10 rounded-full border border-gray-200 text-2xl" aria-label="Search">
             ⌕
         </button>
     </header>
 
-    <!-- SEARCH -->
     <div id="searchBox" class="hidden p-3 border-b">
-        <input
-            id="searchInput"
-            type="text"
-            placeholder="Search your favourite pizza..."
+        <input id="searchInput"  type="text" placeholder="Search your favourite pizza..."
             class="w-full border border-gray-300 rounded-lg p-3 outline-none focus:border-red-500">
     </div>
 
-    <!-- FILTERS -->
     <section class="flex flex-wrap items-center gap-2 p-3 border-b border-gray-200">
-
-        <button
-            id="vegFilter"
-            class="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100">
+        <button  id="vegFilter" class="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100">
             <span class="veg-icon">
                 <span class="w-2 h-2 bg-green-600 rounded-full"></span>
             </span>
             Veg Only
         </button>
 
-        <button
-            id="nonVegFilter"
-            class="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100">
+        <button id="nonVegFilter" class="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100">
             <span class="nonveg-icon">
                 <span class="w-2 h-2 bg-red-700 rounded-full"></span>
             </span>
             Non Veg Only
         </button>
 
-        <select
-            id="sortSelect"
-            class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+        <select  id="sortSelect" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
             <option value="default">Sort by ↕</option>
             <option value="low">Price: Low to High</option>
             <option value="high">Price: High to Low</option>
         </select>
     </section>
 
-    <!-- CATEGORY NAVIGATION -->
     <nav class="sticky top-0 z-20 bg-white border-b border-gray-300">
         <div id="categoryNav" class="flex overflow-x-auto">
             <button class="category active" data-category="Cheese Lava">
                 Cheese Lava
             </button>
+           
             <button class="category" data-category="Big Big Pizza">
                 Big Big Pizza
             </button>
+           
             <button class="category" data-category="Veg Pizza">
                 Veg Pizza
             </button>
+           
             <button class="category" data-category="Non-Veg Pizza">
                 Non-Veg Pizza
             </button>
+           
             <button class="category" data-category="Deals">
                 Deals
             </button>
+           
             <button class="category" data-category="Chicken Feast">
                 Chicken Feast
             </button>
+           
             <button class="category" data-category="Cheese Burst Pizza">
                 Cheese Burst Pizza
             </button>
+           
             <button class="category" data-category="Cheese Volcano">
                 Cheese Volcano
             </button>
+           
             <button class="category" data-category="Pizza Mania">
                 Pizza Mania
             </button>
+           
             <button class="category" data-category="Garlic Breads & Dips">
                 Garlic Breads & Dips
             </button>
+           
             <button class="category" data-category="Beverages">
                 Beverages
             </button>
+           
             <button class="category" data-category="Desserts">
                 Desserts
             </button>
+            
             <button class="category" data-category="No Onion No Garlic">
                 No Onion No Garlic
             </button>
+           
             <button class="category" data-category="Tacos & Parcels">
                 Tacos & Parcels
             </button>
+           
             <button class="category" data-category="Slices">
                 Slices
             </button>
         </div>
     </nav>
 
-    <!-- SECTION TITLE -->
     <div class="flex items-center gap-5 px-4 py-1">
         <div class="h-px bg-gray-300 flex-1"></div>
         <h2 id="sectionTitle" class="text-xl font-bold text-gray-600">
@@ -186,29 +180,16 @@ Copy the complete code below into your `index.html` file and open it in your bro
         <div class="h-px bg-gray-300 flex-1"></div>
     </div>
 
-    <!-- PIZZA CARDS -->
     <main class="max-w-5xl mt-4">
-        <div
-            id="pizzaContainer"
-            class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-            <!-- CARD 1 -->
-            <article
-                class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"
-                data-name="Cheese Lava Golden Corn"
-                data-price="399"
-                data-type="veg"
-                data-category="Cheese Lava">
-
+        <div id="pizzaContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <article class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"  data-name="Cheese Lava Golden Corn"
+                data-price="399" data-type="veg" data-category="Cheese Lava">
                 <img
                     class="pizza-image absolute inset-0 w-full"
                     src="https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=900&q=85"
                     alt="Golden corn cheese pizza">
-
                 <div class="pizza-overlay absolute inset-0"></div>
-
                 <div class="absolute bottom-0 w-full text-white">
-
                     <div class="px-2 pb-3">
                         <h3 class="font-bold text-lg flex items-center gap-2">
                             <span class="veg-icon">
@@ -237,21 +218,15 @@ Copy the complete code below into your `index.html` file and open it in your bro
                             </p>
                         </div>
 
-                        <button
-                            class="add-btn bg-[#e31837] hover:bg-red-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
+                        <button class="add-btn bg-[#e31837] hover:bg-red-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
                             Add +
                         </button>
                     </div>
                 </div>
             </article>
 
-            <!-- CARD 2 -->
-            <article
-                class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"
-                data-name="Cheese Lava Spiced Double Chicken"
-                data-price="399"
-                data-type="nonveg"
-                data-category="Cheese Lava">
+            <article class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item" data-name="Cheese Lava Spiced Double Chicken"
+                data-price="399" data-type="nonveg" data-category="Cheese Lava">
 
                 <img
                     class="pizza-image absolute inset-0 w-full"
@@ -259,9 +234,7 @@ Copy the complete code below into your `index.html` file and open it in your bro
                     alt="Chicken cheese pizza">
 
                 <div class="pizza-overlay absolute inset-0"></div>
-
                 <div class="absolute bottom-0 w-full text-white">
-
                     <div class="px-2 pb-3">
                         <h3 class="font-bold text-lg flex items-center gap-2">
                             <span class="nonveg-icon">
@@ -300,12 +273,8 @@ Copy the complete code below into your `index.html` file and open it in your bro
             </article>
 
             <!-- CARD 3 -->
-            <article
-                class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"
-                data-name="Cheese Lava Veggie Delight"
-                data-price="349"
-                data-type="veg"
-                data-category="Cheese Lava">
+            <article class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item" data-name="Cheese Lava Veggie Delight"
+                data-price="349" data-type="veg"  data-category="Cheese Lava">
 
                 <img
                     class="pizza-image absolute inset-0 w-full"
@@ -313,9 +282,7 @@ Copy the complete code below into your `index.html` file and open it in your bro
                     alt="Vegetable pizza">
 
                 <div class="pizza-overlay absolute inset-0"></div>
-
                 <div class="absolute bottom-0 w-full text-white">
-
                     <div class="px-2 pb-3">
                         <h3 class="font-bold text-lg flex items-center gap-2">
                             <span class="veg-icon">
@@ -343,7 +310,6 @@ Copy the complete code below into your `index.html` file and open it in your bro
                                 Medium | Pull Apart Crust
                             </p>
                         </div>
-
                         <button
                             class="add-btn bg-[#e31837] hover:bg-red-700 text-white font-bold text-lg px-6 py-3 rounded-lg">
                             Add +
@@ -352,23 +318,15 @@ Copy the complete code below into your `index.html` file and open it in your bro
                 </div>
             </article>
 
-            <!-- CARD 4 -->
-            <article
-                class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item"
-                data-name="Cheese Lava Mushroom"
-                data-price="379"
-                data-type="veg"
-                data-category="Cheese Lava">
+            <article class="pizza-card relative overflow-hidden rounded-md shadow-md pizza-item" data-name="Cheese Lava Mushroom"
+                data-price="379" data-type="veg" data-category="Cheese Lava">
 
-                <img
-                    class="pizza-image absolute inset-0 w-full"
+                <img class="pizza-image absolute inset-0 w-full"
                     src="https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=900&q=85"
                     alt="Mushroom cheese pizza">
 
                 <div class="pizza-overlay absolute inset-0"></div>
-
                 <div class="absolute bottom-0 w-full text-white">
-
                     <div class="px-2 pb-3">
                         <h3 class="font-bold text-lg flex items-center gap-2">
                             <span class="veg-icon">
@@ -412,7 +370,6 @@ Copy the complete code below into your `index.html` file and open it in your bro
         </p>
     </main>
 
-    <!-- FIXED CART BAR -->
     <footer
         class="fixed bottom-0 left-0 z-50 w-full bg-[#e31837] text-white px-3 py-3 rounded-t-md shadow-lg">
 
@@ -422,9 +379,7 @@ Copy the complete code below into your `index.html` file and open it in your bro
                 <p id="cartTotal" class="text-xs"></p>
             </div>
 
-            <button
-                id="viewCart"
-                class="flex items-center gap-2 font-bold hover:opacity-80">
+            <button id="viewCart" class="flex items-center gap-2 font-bold hover:opacity-80">
                 <span class="text-2xl">🛒</span>
                 <span>View Cart</span>
                 <span id="cartBadge" class="bg-white text-red-600 rounded-full px-2 text-xs">
@@ -435,10 +390,7 @@ Copy the complete code below into your `index.html` file and open it in your bro
         </div>
     </footer>
 
-    <!-- CART MODAL -->
-    <div
-        id="cartModal"
-        class="hidden fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4">
+    <div id="cartModal" class="hidden fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4">
 
         <div class="bg-white rounded-xl w-full max-w-md p-5 shadow-xl">
 
@@ -456,18 +408,14 @@ Copy the complete code below into your `index.html` file and open it in your bro
                 <span id="modalTotal" class="font-bold text-xl">₹0</span>
             </div>
 
-            <button
-                id="checkoutBtn"
-                class="mt-4 w-full rounded-lg bg-[#e31837] text-white font-bold py-3">
+            <button  id="checkoutBtn" class="mt-4 w-full rounded-lg bg-[#e31837] text-white font-bold py-3">
                 Continue
             </button>
         </div>
     </div>
 
-    <!-- JAVASCRIPT -->
     <script>
         const pizzas = [...document.querySelectorAll(".pizza-item")];
-
         const vegFilter = document.getElementById("vegFilter");
         const nonVegFilter = document.getElementById("nonVegFilter");
         const sortSelect = document.getElementById("sortSelect");
@@ -479,13 +427,11 @@ Copy the complete code below into your `index.html` file and open it in your bro
         let selectedCategory = "Cheese Lava";
         let cart = [];
 
-        // SEARCH BOX
         document.getElementById("searchBtn").addEventListener("click", () => {
             document.getElementById("searchBox").classList.toggle("hidden");
             searchInput.focus();
         });
 
-        // CATEGORY NAVIGATION
         document.querySelectorAll(".category").forEach(button => {
             button.addEventListener("click", () => {
                 document.querySelector(".category.active")
@@ -502,14 +448,12 @@ Copy the complete code below into your `index.html` file and open it in your bro
             });
         });
 
-        // VEG FILTER
         vegFilter.addEventListener("click", () => {
             selectedType = selectedType === "veg" ? "all" : "veg";
             updateFilterButtons();
             filterPizzas();
         });
 
-        // NON-VEG FILTER
         nonVegFilter.addEventListener("click", () => {
             selectedType = selectedType === "nonveg" ? "all" : "nonveg";
             updateFilterButtons();
@@ -528,13 +472,10 @@ Copy the complete code below into your `index.html` file and open it in your bro
             );
         }
 
-        // SEARCH
         searchInput.addEventListener("input", filterPizzas);
 
-        // SORT
         sortSelect.addEventListener("change", filterPizzas);
 
-        // FILTER, SEARCH AND SORT
         function filterPizzas() {
             const searchText = searchInput.value.toLowerCase();
 
@@ -546,8 +487,6 @@ Copy the complete code below into your `index.html` file and open it in your bro
                 const matchesSearch =
                     pizza.dataset.name.toLowerCase().includes(searchText);
 
-                // Demo products are in the Cheese Lava category.
-                // Other category selections show the available demo products.
                 const matchesCategory =
                     selectedCategory === "Cheese Lava" ||
                     pizza.dataset.category === selectedCategory;
@@ -577,7 +516,6 @@ Copy the complete code below into your `index.html` file and open it in your bro
             noResults.classList.toggle("hidden", filtered.length !== 0);
         }
 
-        // ADD PIZZA TO CART
         document.querySelectorAll(".add-btn").forEach(button => {
             button.addEventListener("click", () => {
                 const pizza = button.closest(".pizza-item");
@@ -606,7 +544,6 @@ Copy the complete code below into your `index.html` file and open it in your bro
             });
         });
 
-        // UPDATE CART
         function updateCart() {
             const count = cart.reduce(
                 (sum, item) => sum + item.quantity, 0
@@ -680,7 +617,6 @@ Copy the complete code below into your `index.html` file and open it in your bro
             });
         }
 
-        // OPEN AND CLOSE CART
         const cartModal = document.getElementById("cartModal");
 
         document.getElementById("viewCart").addEventListener("click", () => {
@@ -708,24 +644,3 @@ Copy the complete code below into your `index.html` file and open it in your bro
 
 </body>
 </html>
-```
-
-## Step 2: Run the page
-
-1. Create a folder named `Dominos`.
-2. Inside it, create `index.html`.
-3. Paste the code and save it.
-4. Open `index.html` in Chrome, or use the **Live Server** extension in VS Code.
-
-## Features included
-
-* Responsive pizza menu with two columns on desktop and one on mobile.
-* Horizontal, scrollable categories.
-* Working Veg Only and Non Veg Only filters.
-* Search pizzas by name.
-* Sort by price from low to high or high to low.
-* Add pizzas to the cart and increase quantities.
-* View the cart, remove items, and calculate the total.
-* Fixed red cart bar at the bottom.
-
-**Note:** The pizza photos are sample images from Unsplash, not official Domino’s product photos. The category navigation is a front-end demo; additional products need to be added for other categories. The checkout button is also a demo and does not process real payments.
