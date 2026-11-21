@@ -21,18 +21,6 @@ A modern and responsive **Pizza Ordering Website** built to provide users with a
 - **JavaScript** – Interactive functionality.
 - **Vercel** – Deployment and hosting.
 
-## 📂 Project Structure
-
-```text
-Pizza_Ordering_Website/
-│
-├── index.html
-├── assets/
-│   └── images/
-├── css/
-├── js/
-└── README.md
-```
 
 *Note: Update the folder structure above to match your actual project.*
 
